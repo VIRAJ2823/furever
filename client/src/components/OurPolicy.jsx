@@ -1,225 +1,89 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  ShieldCheck,
-  RotateCcw,
-  Headphones,
-} from "lucide-react";
+import { ShieldCheck, RotateCcw, Truck, HeartHandshake } from "lucide-react";
 
-function OurPolicy() {
+export default function OurPolicy() {
   const policies = [
     {
       icon: ShieldCheck,
-      title: "Premium Quality",
+      title: "240 GSM Heavyweight Build",
       description:
-        "Thoughtfully designed products crafted with quality, comfort and care.",
+        "Engineered with 100% bio-washed combed cotton that retains structure wash after wash.",
+    },
+    {
+      icon: Truck,
+      title: "Fast Tracked Delivery",
+      description:
+        "Dispatched within 24 hours with live SMS tracking and express door-to-door delivery.",
     },
     {
       icon: RotateCcw,
-      title: "Easy Returns",
+      title: "Easy 7-Day Size Exchanges",
       description:
-        "Shop with confidence with a simple and hassle-free return experience.",
+        "Wrong fit? Swap your size seamlessly with our frictionless reverse pickup service.",
     },
     {
-      icon: Headphones,
-      title: "Dedicated Support",
+      icon: HeartHandshake,
+      title: "10% For Shelter Animals",
       description:
-        "Our team is always here to help you with your FurEver experience.",
+        "Every single order directly buys medical supplies and daily meals for stray animals.",
     },
   ];
 
   return (
-    <section className="w-full bg-[#FAF7F1] py-20 sm:py-24 lg:py-32">
-      <div className="w-full px-5 sm:px-8 lg:px-12 xl:px-20">
-
+    <section className="w-full bg-[#FAF8F5] py-20 sm:py-24 border-t border-neutral-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Section Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-14 lg:mb-20"
+          className="text-center mb-14 sm:mb-16"
         >
-          <p className="text-[#FF6A3D] uppercase tracking-[0.3em] text-xs sm:text-sm font-semibold mb-4">
-            The FurEver Promise
+          <p className="font-heading text-xs font-bold uppercase tracking-[0.25em] text-[#FF462D] mb-3">
+            The FurEver Standard
           </p>
 
-          <h2
-            className="
-              text-4xl
-              sm:text-5xl
-              lg:text-6xl
-              font-bold
-              text-[#14172E]
-            "
-            style={{
-              fontFamily: "'Baloo 2', sans-serif",
-            }}
-          >
-            Why Shop With{" "}
-            <span className="text-[#FF6A3D]">
-              Us?
-            </span>
+          <h2 className="font-heading font-black text-3xl sm:text-5xl uppercase tracking-tight text-neutral-950">
+            WHY REBELS <span className="text-[#FF462D]">TRUST US</span>
           </h2>
-
-          <p
-            className="
-              mt-5
-              max-w-2xl
-              mx-auto
-              text-[#8D8D8D]
-              text-base
-              sm:text-lg
-              leading-relaxed
-            "
-          >
-            Every FurEver experience is built around quality, trust and
-            the little details that make shopping feel special.
-          </p>
         </motion.div>
 
-        {/* Policy Cards */}
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-3
-            gap-6
-            lg:gap-8
-            xl:gap-10
-            w-full
-          "
-        >
+        {/* Policy Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {policies.map((policy, index) => {
             const Icon = policy.icon;
 
             return (
               <motion.div
                 key={policy.title}
-                initial={{
-                  opacity: 0,
-                  y: 40,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.15,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                whileHover={{
-                  y: -12,
-                }}
-                className="
-                  group
-                  w-full
-                  min-h-[360px]
-                  lg:min-h-[430px]
-                  xl:min-h-[480px]
-                  bg-white
-                  rounded-[32px]
-                  lg:rounded-[40px]
-                  px-8
-                  sm:px-10
-                  lg:px-12
-                  xl:px-16
-                  py-12
-                  lg:py-16
-                  xl:py-20
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-                  text-center
-                  shadow-md
-                  hover:shadow-2xl
-                  transition-all
-                  duration-500
-                "
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="p-8 rounded-3xl bg-white border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 hover:shadow-xl flex flex-col justify-between"
               >
-                {/* Icon */}
-                <div
-                  className="
-                    w-24
-                    h-24
-                    lg:w-28
-                    lg:h-28
-                    xl:w-32
-                    xl:h-32
-                    rounded-full
-                    bg-[#FFF0E9]
-                    flex
-                    items-center
-                    justify-center
-                    text-[#FF6A3D]
-                    group-hover:bg-[#FF6A3D]
-                    group-hover:text-white
-                    transition-all
-                    duration-500
-                    shrink-0
-                  "
-                >
-                  <Icon
-                    size={48}
-                    strokeWidth={1.6}
-                    className="lg:w-14 lg:h-14"
-                  />
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-[#FF462D] mb-6">
+                    <Icon size={24} strokeWidth={2} />
+                  </div>
+
+                  <h3 className="font-heading font-bold text-lg text-neutral-900 mb-2">
+                    {policy.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                    {policy.description}
+                  </p>
                 </div>
-
-                {/* Title */}
-                <h3
-                  className="
-                    mt-8
-                    lg:mt-10
-                    text-2xl
-                    lg:text-3xl
-                    xl:text-4xl
-                    font-bold
-                    text-[#14172E]
-                  "
-                >
-                  {policy.title}
-                </h3>
-
-                {/* Description */}
-                <p
-                  className="
-                    mt-5
-                    max-w-md
-                    text-[#8D8D8D]
-                    text-base
-                    lg:text-lg
-                    xl:text-xl
-                    leading-relaxed
-                  "
-                >
-                  {policy.description}
-                </p>
-
-                {/* Decorative Line */}
-                <div
-                  className="
-                    mt-8
-                    w-16
-                    h-1
-                    rounded-full
-                    bg-[#FF6A3D]
-                    group-hover:w-28
-                    transition-all
-                    duration-500
-                  "
-                />
               </motion.div>
             );
           })}
         </div>
+
       </div>
     </section>
   );
 }
-
-export default OurPolicy;

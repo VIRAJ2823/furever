@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-function Title({ text1, text2 }) {
+export default function Title({ text1, text2, subtitle }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -10,20 +10,18 @@ function Title({ text1, text2 }) {
       viewport={{ once: true }}
       className="text-center"
     >
-      <h2
-        className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide"
-        style={{
-          fontFamily: "'Baloo 2', sans-serif",
-        }}
-      >
-        <span className="text-[#14172E]">{text1} </span>
+      {subtitle && (
+        <p className="font-heading text-xs font-bold uppercase tracking-[0.25em] text-[#FF462D] mb-3">
+          {subtitle}
+        </p>
+      )}
 
-        <span className="text-[#FF6A3D]">{text2}</span>
+      <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-6xl tracking-tight uppercase leading-none">
+        <span className="text-[#121217]">{text1} </span>
+        <span className="text-[#FF462D]">{text2}</span>
       </h2>
 
-      <div className="w-28 h-1 bg-[#FF6A3D] rounded-full mx-auto mt-4"></div>
+      <div className="w-16 h-1 bg-[#FF462D] rounded-full mx-auto mt-4"></div>
     </motion.div>
   );
 }
-
-export default Title;

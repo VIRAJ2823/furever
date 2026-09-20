@@ -1,29 +1,24 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Flame } from "lucide-react";
 import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import googleLogo from "../assets/google.png";
-import { authDataContext } from "../context/Authcontext.jsx";
-import { auth, provider } from "../utils/Firebase.js";
-import { userDataContext } from "../context/UserContext.jsx";
 import paws from "../assets/paws.png";
+import { authDataContext } from "../context/Authcontext.jsx";
+import { userDataContext } from "../context/UserContext.jsx";
+import { auth, provider } from "../utils/Firebase.js";
 
-const isValidEmail = (v) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 export default function Login() {
   const { serverUrl } = useContext(authDataContext);
-  const navigate = useNavigate();
-
   const { getCurrentUser } = useContext(userDataContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState("idle");
@@ -33,29 +28,17 @@ export default function Login() {
     email: isValidEmail(form.email),
     password: form.password.length >= 6,
   };
-
   const allValid = valid.email && valid.password;
 
   const handleChange = (field) => (e) =>
-    setForm((f) => ({
-      ...f,
-      [field]: e.target.value,
-    }));
+    setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const handleBlur = (field) => () =>
-    setTouched((t) => ({
-      ...t,
-      [field]: true,
-    }));
+    setTouched((t) => ({ ...t, [field]: true }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setTouched({
-      email: true,
-      password: true,
-    });
-
+    setTouched({ email: true, password: true });
     if (!allValid) return;
 
     setServerError("");
@@ -64,332 +47,183 @@ export default function Login() {
     try {
       const res = await axios.post(
         `${serverUrl}/api/auth/login`,
-        {
-          email: form.email,
-          password: form.password,
-        },
-        {
-          withCredentials: true,
-        }
+        { email: form.email, password: form.password },
+        { withCredentials: true }
       );
-
-      console.log(res.data);
-
       await getCurrentUser();
-
       setStatus("success");
-
       setTimeout(() => {
-        navigate("/");
-      }, 1200);
+        navigate(location.state?.from || "/");
+      }, 800);
     } catch (error) {
-      console.error("Error logging in user:", error);
-
+      console.error("Login error:", error);
       setServerError(
-        error?.response?.data?.message ||
-          "Invalid email or password. Please try again."
+        error?.response?.data?.message || "Invalid credentials. Please verify and try again."
       );
-
       setStatus("idle");
     }
   };
 
   const handleGoogleLogin = async () => {
+    if (!auth || !provider) {
+      setServerError("Google Sign-In requires VITE_FIREBASE_API_KEY in client/.env. Please use email & password.");
+      return;
+    }
     try {
       setServerError("");
       setStatus("loading");
-
       const response = await signInWithPopup(auth, provider);
-
       const name = response.user.displayName;
       const email = response.user.email;
 
-      const res = await axios.post(
+      await axios.post(
         `${serverUrl}/api/auth/google-login`,
-        {
-          name,
-          email,
-        },
-        {
-          withCredentials: true,
-        }
+        { name, email },
+        { withCredentials: true }
       );
-
-      console.log(res.data);
-
       await getCurrentUser();
-
       setStatus("success");
-
       setTimeout(() => {
-        navigate("/");
+        navigate(location.state?.from || "/");
       }, 800);
     } catch (error) {
-      setStatus("idle");
-
       console.error(error);
-
-      setServerError(
-        error?.response?.data?.message ||
-          error.message ||
-          "Google Sign In Failed"
-      );
+      setStatus("idle");
+      setServerError(error?.response?.data?.message || error.message || "Google Sign In Failed");
     }
   };
 
   return (
-    <div
-      className="min-h-screen w-full bg-[#FAF7F1] flex flex-col"
-      style={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      {/* Header: logo left, sign-up link right */}
-      <div className="flex items-center justify-between px-6 sm:px-10 py-6 sm:py-8">
-        <a href="/" className="inline-flex items-center gap-2.5 group">
-          <img
-            src={paws}
-            alt="FurEver"
-            className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-105 transition-transform"
-          />
+    <div className="min-h-screen w-full bg-[#0D0D11] text-white flex flex-col justify-between relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-[-20%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-[#FF462D]/12 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-[#FF462D]/08 blur-[100px] pointer-events-none" />
 
-          <span
-            className="text-[#14172E] text-2xl sm:text-3xl"
-            style={{
-              fontFamily: "'Baloo 2', sans-serif",
-              fontWeight: 700,
-            }}
-          >
-            FurEver
+      {/* Top Bar */}
+      <div className="flex items-center justify-between px-6 sm:px-12 py-6 z-10">
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center p-1.5">
+            <img src={paws} alt="FurEver" className="w-full h-full object-contain" />
+          </div>
+          <span className="font-heading font-black text-xl tracking-tight uppercase">
+            FUR<span className="text-[#FF462D]">EVER</span>
           </span>
-        </a>
+        </Link>
 
-        <a
-          href="/signup"
-          className="inline-flex items-center gap-2 text-[#14172E] text-sm sm:text-base font-medium border border-[#E7E7F3] bg-white rounded-full px-4 sm:px-5 py-2 sm:py-2.5 hover:border-[#3B4CE0] hover:text-[#3B4CE0] transition-colors"
+        <Link
+          to="/signup"
+          className="text-xs font-heading font-bold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
         >
-          <span className="hidden sm:inline text-[#8A8FB0]">
-            New here?
-          </span>
-          Sign up
-        </a>
+          Create Account <span className="text-[#FF462D]">→</span>
+        </Link>
       </div>
 
-      {/* Centered form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 pb-12">
+      {/* Center Auth Card */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8 z-10">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full max-w-lg"
+          className="w-full max-w-md bg-[#14141A] border border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl relative"
         >
-          {/* Heading + message above the card */}
-          <div className="text-center mb-7 sm:mb-9">
-            <h1
-              className="text-[#14172E] text-4xl sm:text-5xl mb-3"
-              style={{
-                fontFamily: "'Baloo 2', sans-serif",
-                fontWeight: 700,
-              }}
-            >
-              Welcome back 🐾
+          <div className="mb-8 text-center">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-[#FF462D] mb-3">
+              <Flame size={12} fill="currentColor" />
+              Rebel Access
+            </span>
+            <h1 className="font-heading font-black text-3xl uppercase tracking-tight text-white mb-2">
+              SIGN IN
             </h1>
-
-            <p className="text-[#8A8FB0] text-lg sm:text-xl">
-              Log in to pick up right where you left off.
+            <p className="text-xs text-neutral-400">
+              Access your drop orders, wishlist, and fast checkout.
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl border border-[#EFEFF6] shadow-[0_10px_40px_-12px_rgba(20,23,46,0.12)] p-7 sm:p-14">
-            {status === "success" ? (
-              <div className="text-center py-8">
-                <div className="w-20 h-20 rounded-full bg-[#3B4CE0] flex items-center justify-center mx-auto mb-6">
-                  <img
-                    src={paws}
-                    alt=""
-                    className="w-10 h-10 object-contain brightness-0 invert"
-                  />
-                </div>
+          {/* Google Button */}
+          <button
+            onClick={handleGoogleLogin}
+            disabled={status === "loading"}
+            className="w-full py-3.5 px-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 mb-6"
+          >
+            <img src={googleLogo} alt="Google" className="w-4 h-4 object-contain" />
+            <span>Continue with Google</span>
+          </button>
 
-                <h2
-                  className="text-[#14172E] text-4xl mb-3"
-                  style={{
-                    fontFamily: "'Baloo 2', sans-serif",
-                    fontWeight: 700,
-                  }}
-                >
-                  Good to see you!
-                </h2>
-
-                <p className="text-[#8A8FB0] text-lg">
-                  You're logged in.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="mb-6">
-                  <label
-                    htmlFor="email"
-                    className="block text-lg font-medium text-[#14172E] mb-2.5"
-                  >
-                    Email
-                  </label>
-
-                  <div className="relative">
-                    <Mail
-                      size={22}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#9DA1C4]"
-                    />
-
-                    <input
-                      id="email"
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange("email")}
-                      onBlur={handleBlur("email")}
-                      placeholder="you@example.com"
-                      className="w-full pl-14 pr-5 rounded-xl border border-[#E7E7F3] bg-white text-lg text-[#14172E] placeholder:text-[#B0B3CC] outline-none focus:border-[#3B4CE0] focus:ring-2 focus:ring-[#3B4CE0]/15 transition-all"
-                      style={{
-                        paddingTop: "1.1rem",
-                        paddingBottom: "1.1rem",
-                      }}
-                    />
-                  </div>
-
-                  {touched.email && !valid.email && (
-                    <p className="text-[#FF7A5C] text-base mt-2">
-                      Enter a valid email address.
-                    </p>
-                  )}
-                </div>
-
-                {/* Password */}
-                <div className="mb-3">
-                  <label
-                    htmlFor="password"
-                    className="block text-lg font-medium text-[#14172E] mb-2.5"
-                  >
-                    Password
-                  </label>
-
-                  <div className="relative">
-                    <Lock
-                      size={22}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-[#9DA1C4]"
-                    />
-
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={form.password}
-                      onChange={handleChange("password")}
-                      onBlur={handleBlur("password")}
-                      placeholder="Your password"
-                      className="w-full pl-14 pr-14 rounded-xl border border-[#E7E7F3] bg-white text-lg text-[#14172E] placeholder:text-[#B0B3CC] outline-none focus:border-[#3B4CE0] focus:ring-2 focus:ring-[#3B4CE0]/15 transition-all"
-                      style={{
-                        paddingTop: "1.1rem",
-                        paddingBottom: "1.1rem",
-                      }}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword((s) => !s)
-                      }
-                      className="absolute right-5 top-1/2 -translate-y-1/2 text-[#9DA1C4] hover:text-[#3B4CE0] transition-colors"
-                      aria-label={
-                        showPassword
-                          ? "Hide password"
-                          : "Show password"
-                      }
-                    >
-                      {showPassword ? (
-                        <EyeOff size={22} />
-                      ) : (
-                        <Eye size={22} />
-                      )}
-                    </button>
-                  </div>
-
-                  {touched.password && !valid.password && (
-                    <p className="text-[#FF7A5C] text-base mt-2">
-                      Password needs at least 6 characters.
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-right mb-6">
-                  <a
-                    href="/forgot-password"
-                    className="text-[#3B4CE0] text-base font-medium hover:underline"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-
-                {serverError && (
-                  <p className="text-[#FF7A5C] text-base mb-4 text-center">
-                    {serverError}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full py-4.5 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-70"
-                  style={{
-                    backgroundColor: allValid
-                      ? "#3B4CE0"
-                      : "#C7CAEB",
-                    cursor: allValid
-                      ? "pointer"
-                      : "not-allowed",
-                    paddingTop: "1.1rem",
-                    paddingBottom: "1.1rem",
-                  }}
-                >
-                  {status === "loading" ? (
-                    <span
-                      className="rounded-full border-2 border-white/40 border-t-white animate-spin"
-                      style={{
-                        width: 22,
-                        height: 22,
-                      }}
-                    />
-                  ) : (
-                    <>
-                      Log in
-                      <ArrowRight size={20} />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
+          <div className="relative flex items-center justify-center mb-6">
+            <div className="w-full border-t border-white/10" />
+            <span className="absolute bg-[#14141A] px-3 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
+              Or With Email
+            </span>
           </div>
 
-          {/* Or log in with Google */}
-          {status !== "success" && (
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              className="w-full mt-5 bg-white rounded-2xl border border-[#EFEFF6] shadow-[0_4px_20px_-8px_rgba(20,23,46,0.1)] px-6 flex items-center justify-center gap-3 hover:border-[#3B4CE0]/40 hover:shadow-[0_6px_24px_-8px_rgba(20,23,46,0.14)] transition-all"
-              style={{
-                paddingTop: "1.1rem",
-                paddingBottom: "1.1rem",
-              }}
-            >
-              <img
-                src={googleLogo}
-                alt=""
-                className="w-6 h-6 object-contain"
-              />
+          {/* Email/Password Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
+                <input
+                  type="email"
+                  required
+                  placeholder="name@example.com"
+                  value={form.email}
+                  onChange={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-neutral-500 text-xs outline-none focus:border-[#FF462D] transition-colors"
+                />
+              </div>
+            </div>
 
-              <span className="text-[#14172E] text-lg font-medium">
-                Log in with Google
-              </span>
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  className="w-full pl-11 pr-11 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-neutral-500 text-xs outline-none focus:border-[#FF462D] transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {serverError && (
+              <p className="text-xs text-red-400 font-semibold text-center">{serverError}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full py-4 rounded-full bg-[#FF462D] hover:bg-[#E03B24] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-[#FF462D]/20 cursor-pointer disabled:opacity-50 mt-6"
+            >
+              {status === "loading" ? "Signing In..." : status === "success" ? "Access Granted!" : "Sign In"}
             </button>
-          )}
+          </form>
+
+          <p className="text-center text-xs text-neutral-400 mt-6">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-[#FF462D] font-bold uppercase hover:underline">
+              Sign Up
+            </Link>
+          </p>
         </motion.div>
+      </div>
+
+      <div className="py-6 text-center text-xs text-neutral-600">
+        © {new Date().getFullYear()} FurEver Studio. Purpose-driven apparel.
       </div>
     </div>
   );

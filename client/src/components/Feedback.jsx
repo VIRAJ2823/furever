@@ -1,12 +1,15 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  MessageCircleHeart,
-  HeartHandshake,
+  MessageSquare,
+  Heart,
   Star,
   ArrowRight,
   PawPrint,
   CheckCircle2,
+  Sparkles,
+  ShieldCheck,
+  Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,47 +17,48 @@ import axios from "axios";
 import { userDataContext } from "../context/UserContext.jsx";
 import { authDataContext } from "../context/Authcontext.jsx";
 
-function Feedback() {
+export default function Feedback() {
   const navigate = useNavigate();
 
   const { userData } = useContext(userDataContext);
   const { serverUrl } = useContext(authDataContext);
 
   const [feedback, setFeedback] = useState("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(5);
+  const [hoveredRating, setHoveredRating] = useState(0);
 
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
 
-    // If user is not logged in
     if (!userData) {
       navigate("/login", {
         state: {
           from: "/",
-          message: "Please login to share your feedback.",
+          message: "Please login to share your drop review.",
         },
       });
-
       return;
     }
 
-    // Validate feedback
     if (!feedback.trim() || rating === 0) {
+      setErrorMessage("Please select a rating and write your thoughts.");
       return;
     }
 
     try {
       setSending(true);
+      setErrorMessage("");
 
       const result = await axios.post(
         `${serverUrl}/api/feedback/send`,
         {
           name: userData.name,
           email: userData.email,
-          feedback,
+          feedback: feedback.trim(),
           rating,
         },
         {
@@ -64,497 +68,230 @@ function Feedback() {
 
       if (result.data.success) {
         setSubmitted(true);
-
         setFeedback("");
-        setRating(0);
+      } else {
+        setErrorMessage(result.data.message || "Failed to submit feedback.");
       }
-
     } catch (error) {
       console.log("Feedback Error:", error);
-
+      setErrorMessage("Something went wrong. Please try again.");
     } finally {
       setSending(false);
     }
   };
 
   return (
-    <section className="w-full bg-[#FAF7F1] py-20 sm:py-24 lg:py-32">
-      <div className="w-full px-5 sm:px-8 lg:px-12 xl:px-20">
-
+    <section className="w-full bg-[#FAF8F5] py-20 sm:py-24 border-t border-neutral-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Section Heading */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.7,
-          }}
-          viewport={{
-            once: true,
-          }}
-          className="text-center mb-14 lg:mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-14 sm:mb-16"
         >
-          <p className="text-[#FF6A3D] uppercase tracking-[0.3em] text-xs sm:text-sm font-semibold mb-4">
-            More Than Just Clothing
+          <p className="font-heading text-xs font-bold uppercase tracking-[0.25em] text-[#FF462D] mb-3">
+            Community & Culture
           </p>
 
-          <h2
-            className="
-              text-4xl
-              sm:text-5xl
-              lg:text-6xl
-              font-bold
-              text-[#14172E]
-            "
-            style={{
-              fontFamily: "'Baloo 2', sans-serif",
-            }}
-          >
-            Be Part of{" "}
-            <span className="text-[#FF6A3D]">
-              FurEver
-            </span>
+          <h2 className="font-heading font-black text-3xl sm:text-5xl uppercase tracking-tight text-neutral-950">
+            SHAPED BY THE <span className="text-[#FF462D]">PACK</span>
           </h2>
-
-          <p className="mt-5 max-w-2xl mx-auto text-[#8D8D8D] text-base sm:text-lg leading-relaxed">
-            Your voice helps us grow. Your support helps us give back.
+          <p className="mt-4 max-w-xl mx-auto text-neutral-500 text-sm sm:text-base font-medium leading-relaxed">
+            Your voice directs our fabric choices, future drop cuts, and local animal shelter funding.
           </p>
         </motion.div>
 
-        {/* Two Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-12">
-
-          {/* FEEDBACK CARD */}
+        {/* 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* LEFT: FEEDBACK SUBMISSION CARD */}
           <motion.div
-            initial={{
-              opacity: 0,
-              x: -40,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              duration: 0.7,
-            }}
-            viewport={{
-              once: true,
-            }}
-            className="
-              group
-              relative
-              overflow-hidden
-              bg-white
-              rounded-[36px]
-              lg:rounded-[44px]
-              p-8
-              sm:p-10
-              lg:p-14
-              xl:p-16
-              shadow-md
-              hover:shadow-2xl
-              transition-all
-              duration-500
-            "
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="lg:col-span-6 bg-white rounded-3xl p-8 sm:p-10 border border-neutral-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
           >
-            {/* Decorative Circle */}
-            <div
-              className="
-                absolute
-                -top-24
-                -right-24
-                w-64
-                h-64
-                rounded-full
-                bg-[#FFF0E9]
-                group-hover:scale-125
-                transition-transform
-                duration-700
-              "
-            />
-
-            <div className="relative z-10">
-
-              {/* Icon */}
-              <div
-                className="
-                  w-20
-                  h-20
-                  lg:w-24
-                  lg:h-24
-                  rounded-full
-                  bg-[#FFF0E9]
-                  flex
-                  items-center
-                  justify-center
-                  text-[#FF6A3D]
-                  mb-8
-                  group-hover:bg-[#FF6A3D]
-                  group-hover:text-white
-                  transition-all
-                  duration-500
-                "
-              >
-                <MessageCircleHeart
-                  size={42}
-                  strokeWidth={1.7}
-                />
+            <div>
+              <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-[#FF462D] mb-6">
+                <MessageSquare size={22} />
               </div>
 
-              <p className="text-[#FF6A3D] uppercase tracking-[0.25em] text-xs font-semibold">
-                We Want To Hear From You
-              </p>
+              <span className="font-heading text-xs font-bold uppercase tracking-widest text-neutral-400">
+                Community Feedback
+              </span>
 
-              <h3
-                className="
-                  mt-4
-                  text-3xl
-                  sm:text-4xl
-                  lg:text-5xl
-                  font-bold
-                  text-[#14172E]
-                "
-              >
-                Tell us what you{" "}
-                <span className="text-[#FF6A3D]">
-                  think.
-                </span>
+              <h3 className="font-heading font-black text-2xl sm:text-3xl text-neutral-900 mt-2 mb-4 uppercase">
+                Tell Us What You <span className="text-[#FF462D]">Think</span>
               </h3>
 
-              <p className="mt-5 text-[#8D8D8D] text-base lg:text-lg leading-relaxed max-w-xl">
-                Every piece of feedback helps us create better products,
-                better experiences and a better FurEver community.
+              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed mb-6">
+                Whether it's the weight of the collar, sleeve length, or a new colorway you want to see in Drop 02, we read every note.
               </p>
 
               {!submitted ? (
-
-                <form
-                  onSubmit={handleFeedbackSubmit}
-                  className="mt-8"
-                >
-
-                  {/* Rating */}
-                  <div className="mb-6">
-
-                    <p className="text-[#14172E] font-semibold mb-3">
-                      Rate your experience
-                    </p>
-
+                <form onSubmit={handleFeedbackSubmit} className="space-y-4">
+                  {/* Rating Stars */}
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-2">
+                      Rate The Experience:
+                    </label>
                     <div className="flex gap-2">
-
                       {[1, 2, 3, 4, 5].map((star) => (
-
                         <button
                           key={star}
                           type="button"
                           onClick={() => setRating(star)}
-                          className="
-                            transition-transform
-                            hover:scale-125
-                          "
+                          onMouseEnter={() => setHoveredRating(star)}
+                          onMouseLeave={() => setHoveredRating(0)}
+                          className="p-1 cursor-pointer transition-transform hover:scale-110"
                         >
                           <Star
-                            size={27}
-                            className={
-                              star <= rating
-                                ? "fill-[#FF6A3D] text-[#FF6A3D]"
-                                : "text-[#D8D8D8]"
-                            }
+                            size={22}
+                            className={`${
+                              star <= (hoveredRating || rating)
+                                ? "text-[#FF462D] fill-[#FF462D]"
+                                : "text-neutral-200"
+                            } transition-colors`}
                           />
                         </button>
-
                       ))}
-
                     </div>
-
                   </div>
 
-                  {/* Feedback Input */}
-                  <textarea
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Share your thoughts with us..."
-                    rows={4}
-                    required
-                    className="
-                      w-full
-                      resize-none
-                      rounded-2xl
-                      border
-                      border-[#E8DED5]
-                      bg-[#FFFCF9]
-                      px-5
-                      py-4
-                      text-[#14172E]
-                      placeholder:text-[#A6A6A6]
-                      outline-none
-                      focus:border-[#FF6A3D]
-                      focus:ring-2
-                      focus:ring-[#FF6A3D]/10
-                      transition-all
-                    "
-                  />
+                  {/* Feedback Textarea */}
+                  <div>
+                    <textarea
+                      rows={4}
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      placeholder={
+                        userData
+                          ? "Write your honest feedback on fabric, fit, or the brand..."
+                          : "Please sign in to write your feedback..."
+                      }
+                      className="w-full p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-900 focus:bg-white transition-all resize-none"
+                    />
+                  </div>
 
-                  {/* Submit Button */}
+                  {errorMessage && (
+                    <p className="text-xs text-red-500 font-semibold">{errorMessage}</p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={sending}
-                    className="
-                      mt-5
-                      w-full
-                      sm:w-auto
-                      px-8
-                      py-4
-                      rounded-full
-                      bg-[#14172E]
-                      text-white
-                      font-semibold
-                      flex
-                      items-center
-                      justify-center
-                      gap-3
-                      hover:bg-[#FF6A3D]
-                      transition-all
-                      duration-300
-                      disabled:opacity-50
-                      disabled:cursor-not-allowed
-                    "
+                    className="w-full py-4 rounded-full bg-[#0D0D11] hover:bg-[#FF462D] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
-                    {sending
-                      ? "Sending..."
-                      : "Submit Feedback"}
-
-                    <ArrowRight size={18} />
+                    {sending ? (
+                      <span>Submitting...</span>
+                    ) : (
+                      <>
+                        <span>Submit Feedback</span>
+                        <Send size={14} />
+                      </>
+                    )}
                   </button>
-
                 </form>
-
               ) : (
-
-                <div
-                  className="
-                    mt-8
-                    rounded-2xl
-                    bg-[#F1FAF3]
-                    border
-                    border-[#CDE8D2]
-                    p-5
-                    flex
-                    items-center
-                    gap-3
-                    text-[#287A38]
-                  "
-                >
-                  <CheckCircle2 size={24} />
-
-                  <p className="font-semibold">
-                    Thank you for sharing your feedback with us!
-                  </p>
+                <div className="p-6 rounded-2xl bg-[#00A878]/10 border border-[#00A878]/20 flex items-center gap-3 text-[#00A878]">
+                  <CheckCircle2 size={24} className="shrink-0" />
+                  <div>
+                    <h4 className="font-heading font-bold text-sm">Feedback Received!</h4>
+                    <p className="text-xs text-neutral-600 mt-0.5">
+                      Thank you for contributing to the future of FurEver.
+                    </p>
+                  </div>
                 </div>
-
               )}
-
             </div>
           </motion.div>
 
-          {/* DONATION CARD */}
+          {/* RIGHT: RESCUE MISSION SHOWCASE */}
           <motion.div
-            initial={{
-              opacity: 0,
-              x: 40,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              duration: 0.7,
-            }}
-            viewport={{
-              once: true,
-            }}
-            className="
-              group
-              relative
-              overflow-hidden
-              bg-[#14172E]
-              rounded-[36px]
-              lg:rounded-[44px]
-              p-8
-              sm:p-10
-              lg:p-14
-              xl:p-16
-              shadow-md
-              hover:shadow-2xl
-              transition-all
-              duration-500
-            "
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="lg:col-span-6 bg-[#0D0D11] text-white rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl flex flex-col justify-between relative overflow-hidden"
           >
-
-            {/* Decorative Circle */}
-            <div
-              className="
-                absolute
-                -top-24
-                -right-24
-                w-72
-                h-72
-                rounded-full
-                bg-[#232744]
-                group-hover:scale-125
-                transition-transform
-                duration-700
-              "
-            />
-
-            <div
-              className="
-                absolute
-                -bottom-32
-                -left-20
-                w-72
-                h-72
-                rounded-full
-                border
-                border-[#FF6A3D]/20
-              "
-            />
+            {/* Ambient Background Glow */}
+            <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#FF462D]/15 blur-3xl pointer-events-none" />
 
             <div className="relative z-10">
-
-              {/* Icon */}
-              <div
-                className="
-                  w-20
-                  h-20
-                  lg:w-24
-                  lg:h-24
-                  rounded-full
-                  bg-[#FF6A3D]
-                  flex
-                  items-center
-                  justify-center
-                  text-white
-                  mb-8
-                  group-hover:scale-110
-                  transition-transform
-                  duration-500
-                "
-              >
-                <HeartHandshake
-                  size={42}
-                  strokeWidth={1.7}
-                />
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#FF462D] mb-6">
+                <Heart size={22} fill="currentColor" />
               </div>
 
-              <p className="text-[#FF8C68] uppercase tracking-[0.25em] text-xs font-semibold">
-                Wear Good. Do Good.
-              </p>
+              <span className="font-heading text-xs font-bold uppercase tracking-widest text-[#FF462D]">
+                Mission & Animal Welfare
+              </span>
 
-              <h3
-                className="
-                  mt-4
-                  text-3xl
-                  sm:text-4xl
-                  lg:text-5xl
-                  font-bold
-                  text-white
-                "
-              >
-                Every purchase can make a{" "}
-                <span className="text-[#FF6A3D]">
-                  difference.
-                </span>
+              <h3 className="font-heading font-black text-2xl sm:text-3xl text-white mt-2 mb-4 uppercase">
+                WEAR GOOD. <span className="text-[#FF462D]">DO GOOD.</span>
               </h3>
 
-              <p className="mt-5 text-[#C8C9D4] text-base lg:text-lg leading-relaxed max-w-xl">
-                FurEver is built on the belief that fashion can have a
-                purpose beyond the product. A portion of our profits goes
-                towards supporting animal welfare initiatives.
+              <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-8">
+                In India, over 60 million stray dogs fight hunger and traffic injuries every day. We created FurEver to bridge the gap between elevated streetwear and tangible compassion.
               </p>
 
-              {/* Donation Highlight */}
-              <div
-                className="
-                  mt-8
-                  rounded-3xl
-                  bg-white/5
-                  border
-                  border-white/10
-                  p-6
-                  sm:p-7
-                "
-              >
-                <div className="flex items-center gap-4">
-
-                  <div
-                    className="
-                      w-14
-                      h-14
-                      rounded-2xl
-                      bg-[#FF6A3D]/15
-                      flex
-                      items-center
-                      justify-center
-                      text-[#FF6A3D]
-                    "
-                  >
-                    <PawPrint size={28} />
+              {/* Impact Metrics Box */}
+              <div className="p-6 rounded-2xl bg-white/[0.04] border border-white/10 space-y-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#FF462D]/20 flex items-center justify-center text-[#FF462D] shrink-0">
+                    <PawPrint size={18} />
                   </div>
-
                   <div>
-
-                    <p className="text-white font-bold text-lg">
-                      Fashion with a purpose
+                    <h4 className="font-heading font-bold text-sm text-white">
+                      10% Direct Donation
+                    </h4>
+                    <p className="text-xs text-neutral-400">
+                      Verified quarterly disbursements to verified local shelter funds.
                     </p>
-
-                    <p className="text-[#AEB0BD] text-sm mt-1">
-                      A part of our profits goes towards making a difference.
-                    </p>
-
                   </div>
+                </div>
 
+                <div className="flex items-center gap-3 pt-3 border-t border-white/5">
+                  <div className="w-10 h-10 rounded-xl bg-[#00E599]/20 flex items-center justify-center text-[#00E599] shrink-0">
+                    <ShieldCheck size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-sm text-white">
+                      100% Cruelty-Free Supply Chain
+                    </h4>
+                    <p className="text-xs text-neutral-400">
+                      Zero animal byproducts, certified vegan dyes, and ethical worker wages.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Mission Button */}
-              <button
-                onClick={() => navigate("/about")}
-                className="
-                  mt-8
-                  px-8
-                  py-4
-                  rounded-full
-                  bg-[#FF6A3D]
-                  text-white
-                  font-semibold
-                  flex
-                  items-center
-                  justify-center
-                  gap-3
-                  hover:bg-white
-                  hover:text-[#14172E]
-                  transition-all
-                  duration-300
-                "
-              >
-                Learn About Our Mission
+              {/* Action Buttons: Mission & Drops */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => navigate("/about")}
+                  className="flex-1 py-4 rounded-full bg-[#FF462D] hover:bg-[#E03B24] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-[#FF462D]/20 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Read The Full Mission</span>
+                  <ArrowRight size={14} />
+                </button>
 
-                <ArrowRight size={18} />
-              </button>
-
+                <button
+                  onClick={() => navigate("/collections")}
+                  className="py-4 px-6 rounded-full bg-white/5 hover:bg-white/10 text-white font-heading text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-center cursor-pointer"
+                >
+                  Support With A Drop
+                </button>
+              </div>
             </div>
           </motion.div>
 
         </div>
+
       </div>
     </section>
   );
 }
-
-export default Feedback;
