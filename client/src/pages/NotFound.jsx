@@ -7,7 +7,7 @@ import Nav from "../components/Nav";
 const NotFound = () => {
   return (
     <div
-      className="min-h-screen w-full bg-[#FAF7F1]"
+      className="min-h-screen w-full bg-[#FAF6F2] text-[#2B2730]"
       style={{
         fontFamily: "'Inter', sans-serif",
       }}
@@ -20,26 +20,26 @@ const NotFound = () => {
         <div className="mx-auto w-full max-w-2xl text-center">
 
           {/* ICON */}
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#FF6A3D]/10">
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#DC8E90]/15">
             <PawPrint
               size={42}
               strokeWidth={1.8}
-              className="text-[#FF6A3D]"
+              className="text-[#DC8E90]"
             />
           </div>
 
           {/* 404 */}
-          <p className="mt-8 text-7xl font-black tracking-tight text-[#FF6A3D] sm:text-8xl">
+          <p className="mt-8 text-7xl font-black tracking-tight text-[#DC8E90] sm:text-8xl">
             404
           </p>
 
           {/* TITLE */}
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#14172E] sm:text-4xl">
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#2B2730] sm:text-4xl">
             Oops! This page wandered off.
           </h1>
 
           {/* DESCRIPTION */}
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[#8A8578] sm:text-base">
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[#58545F] sm:text-base font-medium">
             Looks like the page you're looking for doesn't exist or may have
             been moved. Let's get you back to FurEver.
           </p>
@@ -56,7 +56,8 @@ const NotFound = () => {
                 justify-center
                 gap-2
                 rounded-2xl
-                bg-[#FF6A3D]
+                bg-[#58545F]
+                hover:bg-[#2B2730]
                 px-6
                 py-3.5
                 text-sm
@@ -65,8 +66,7 @@ const NotFound = () => {
                 transition-all
                 duration-200
                 hover:-translate-y-0.5
-                hover:bg-[#e9572c]
-                hover:shadow-lg
+                shadow-xs
                 sm:w-auto
               "
             >
@@ -85,19 +85,19 @@ const NotFound = () => {
                 gap-2
                 rounded-2xl
                 border
-                border-[#E5DDD1]
+                border-[#EDE4DD]
                 bg-white
                 px-6
                 py-3.5
                 text-sm
                 font-bold
-                text-[#50546B]
+                text-[#58545F]
                 transition-all
                 duration-200
                 hover:-translate-y-0.5
-                hover:border-[#FF6A3D]
-                hover:bg-[#FFF4EE]
-                hover:text-[#FF6A3D]
+                hover:border-[#DC8E90]
+                hover:bg-[#FAF6F2]
+                hover:text-[#DC8E90]
                 sm:w-auto
               "
             >
@@ -108,7 +108,7 @@ const NotFound = () => {
           </div>
 
           {/* BRAND MESSAGE */}
-          <p className="mt-10 text-xs font-medium text-[#B4AFA1]">
+          <p className="mt-10 text-xs font-medium text-[#7E7785]">
             FurEver · Made with love for every paw
           </p>
 

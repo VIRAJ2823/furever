@@ -39,84 +39,197 @@ function ShopContext({ children }) {
   const [search, setSearch] = useState("");
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
-  // ---------------- UPCOMING DROPS (TEASERS) ----------------
-  const upcomingDrops = [
+  // ---------------- FUREVER STREETWEAR CATALOG (AUTHENTIC PDF ASSETS) ----------------
+  const DEFAULT_STREETWEAR_PRODUCTS = [
     {
-      _id: "upcoming-01",
-      name: "Shadow Stalker 260 GSM Tee",
-      category: "Men",
-      subCategory: "Topwear",
-      price: 1299,
-      image1: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop",
-      image2: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop",
+      _id: "fur-001",
+      id: "fur-001",
+      name: "Just Vibin' Brontosaurus Oversized Tee",
+      category: "Unisex",
+      subCategory: "Oversized Drops",
+      drop: "Drop 001",
+      price: 499,
+      originalPrice: 899,
+      badge: "Bestseller",
+      description: "240 GSM Heavyweight French Terry cotton. Relaxed streetwear drape featuring our chill dino graphic.",
+      colors: [
+        { name: "Vintage Black", hex: "#111111", inStock: true },
+        { name: "Cloud White", hex: "#F5F5F3", inStock: true }
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
-      bestseller: false,
-      isUpcoming: true,
-      dropBadge: "DROP 02 • SOON",
-      dropDate: "Drops Next Week",
-      description: "260 GSM Heavyweight French Terry in Obsidian Black with high-density silicone puff prints. Limited to 200 pieces."
-    },
-    {
-      _id: "upcoming-02",
-      name: "Cyber Stray Boxy Zip Hoodie",
-      category: "Men",
-      subCategory: "Winterwear",
-      price: 2499,
-      image1: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=800&auto=format&fit=crop",
-      image2: "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?q=80&w=800&auto=format&fit=crop",
-      sizes: ["M", "L", "XL", "XXL"],
+      images: {
+        black: "/images/products/vibin-black.png",
+        white: "/images/products/vibin-white.png"
+      },
+      image1: "/images/products/vibin-black.png",
+      image2: "/images/products/vibin-white.png",
+      specs: {
+        gsm: 240,
+        fit: "Heavyweight Oversized Fit",
+        fabric: "100% Combed Cotton",
+        care: "Cold machine wash inside out, do not iron on print"
+      },
       bestseller: true,
-      isUpcoming: true,
-      dropBadge: "DROP 02 • SOON",
-      dropDate: "Drops Next Week",
-      description: "380 GSM ultra-heavyweight cotton fleece. Custom double-ended metal zipper with relaxed drop-shoulder silhouette."
+      rating: 4.9,
+      reviewCount: 48
     },
     {
-      _id: "upcoming-03",
-      name: "Rebel Pack Acid-Wash Tee",
-      category: "Women",
-      subCategory: "Topwear",
-      price: 1199,
-      image1: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?q=80&w=800&auto=format&fit=crop",
-      image2: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?q=80&w=800&auto=format&fit=crop",
-      sizes: ["S", "M", "L", "XL"],
+      _id: "fur-002",
+      id: "fur-002",
+      name: "I Go Jim Dino Oversized Tee",
+      category: "Men",
+      subCategory: "Oversized Drops",
+      drop: "Drop 001",
+      price: 499,
+      originalPrice: 899,
+      badge: "Trending",
+      description: "240 GSM Heavyweight French Terry. The gym-bro mini dino tee built for pump covers and street fits.",
+      colors: [
+        { name: "Vintage Black", hex: "#111111", inStock: true },
+        { name: "Cloud White", hex: "#F5F5F3", inStock: true }
+      ],
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      images: {
+        black: "/images/products/igojim-black.png",
+        white: "/images/products/igojim-white.png"
+      },
+      image1: "/images/products/igojim-black.png",
+      image2: "/images/products/igojim-white.png",
+      specs: {
+        gsm: 240,
+        fit: "Heavyweight Oversized Fit",
+        fabric: "100% Combed Cotton"
+      },
+      bestseller: true,
+      rating: 4.8,
+      reviewCount: 36
+    },
+    {
+      _id: "fur-003",
+      id: "fur-003",
+      name: "Do Not Disturb Lazy Panda Tee",
+      category: "Unisex",
+      subCategory: "Oversized Drops",
+      drop: "Drop 001",
+      price: 499,
+      originalPrice: 899,
+      badge: "Essential",
+      description: "240 GSM breathable cotton with our sleeping panda graphic print. Slouchy dropped shoulders.",
+      colors: [
+        { name: "Vintage Black", hex: "#111111", inStock: true },
+        { name: "Cloud White", hex: "#F5F5F3", inStock: true }
+      ],
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      images: {
+        black: "/images/products/panda-black.png",
+        white: "/images/products/panda-white.png"
+      },
+      image1: "/images/products/panda-black.png",
+      image2: "/images/products/panda-white.png",
+      specs: {
+        gsm: 240,
+        fit: "Heavyweight Oversized Fit",
+        fabric: "100% Combed Cotton"
+      },
       bestseller: false,
-      isUpcoming: true,
-      dropBadge: "DROP 02 • SOON",
-      dropDate: "Drops Next Week",
-      description: "Hand-treated mineral wash 240 GSM single jersey with vintage distressed collar and raw-cut edge aesthetics."
+      rating: 4.9,
+      reviewCount: 29
+    },
+    {
+      _id: "fur-custom-01",
+      id: "fur-custom-01",
+      name: "Custom Pet Line Art Oversized Tee",
+      category: "Customs",
+      subCategory: "Custom Pet Tee",
+      drop: "Memory Series",
+      price: 429,
+      originalPrice: 799,
+      badge: "10% to Animal Welfare",
+      description: "Upload a photo of your pet. We hand-draw a custom minimalist line-art portrait printed on 240 GSM heavyweight cotton.",
+      customizable: true,
+      styleVariant: "Minimalist Line Art",
+      colors: [
+        { name: "Vintage Black", hex: "#111111", inStock: true },
+        { name: "Cloud White", hex: "#F5F5F3", inStock: true }
+      ],
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      images: {
+        black: "/images/customs/lineart-black.png",
+        white: "/images/customs/lineart-white.png"
+      },
+      image1: "/images/customs/lineart-black.png",
+      image2: "/images/customs/lineart-white.png",
+      specs: {
+        gsm: 240,
+        customNote: "Art proof shared via WhatsApp/Email within 24 hours."
+      },
+      bestseller: true,
+      rating: 5.0,
+      reviewCount: 64
+    },
+    {
+      _id: "fur-custom-02",
+      id: "fur-custom-02",
+      name: "Custom Pet Stencil Art Oversized Tee",
+      category: "Customs",
+      subCategory: "Custom Pet Tee",
+      drop: "Memory Series",
+      price: 429,
+      originalPrice: 799,
+      badge: "10% to Animal Welfare",
+      description: "High-contrast monochrome stencil portrait of your pet. 240 GSM heavyweight streetwear fit.",
+      customizable: true,
+      styleVariant: "Graphic Stencil Art",
+      colors: [
+        { name: "Vintage Black", hex: "#111111", inStock: true },
+        { name: "Cloud White", hex: "#F5F5F3", inStock: true }
+      ],
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      images: {
+        black: "/images/customs/stencil-black.png",
+        white: "/images/customs/stencil-white.png"
+      },
+      image1: "/images/customs/stencil-black.png",
+      image2: "/images/customs/stencil-white.png",
+      specs: {
+        gsm: 240,
+        customNote: "Art proof shared via WhatsApp/Email within 24 hours."
+      },
+      bestseller: false,
+      rating: 4.9,
+      reviewCount: 31
     }
   ];
+
+  const upcomingDrops = DEFAULT_STREETWEAR_PRODUCTS;
 
   // ==================================================
   // GET PRODUCTS
   // ==================================================
 
   const getProducts = async () => {
-    if (!serverUrl) {
-      return;
-    }
-
     try {
       setLoading(true);
 
-      const response = await axios.get(
-        `${serverUrl}/api/product/listproduct`
-      );
-
-      if (response.data.success) {
-        setProducts(
-          response.data.products || []
-        );
+      if (serverUrl) {
+        const response = await axios.get(`${serverUrl}/api/product/listproduct`);
+        if (response.data.success && Array.isArray(response.data.products) && response.data.products.length > 0) {
+          // Merge server products with the rich streetwear catalog
+          const serverItems = response.data.products;
+          const merged = [...serverItems];
+          DEFAULT_STREETWEAR_PRODUCTS.forEach((dp) => {
+            if (!merged.some((m) => m.name === dp.name)) {
+              merged.push(dp);
+            }
+          });
+          setProducts(merged);
+          return;
+        }
       }
-
+      setProducts(DEFAULT_STREETWEAR_PRODUCTS);
     } catch (error) {
-      console.log(
-        "Get Products Error:",
-        error.response?.data ||
-          error.message
-      );
-
+      console.log("Get Products Error:", error.response?.data || error.message);
+      setProducts(DEFAULT_STREETWEAR_PRODUCTS);
     } finally {
       setLoading(false);
     }

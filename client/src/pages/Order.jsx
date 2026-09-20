@@ -39,7 +39,7 @@ export default function Order() {
       if (result.data.success) {
         setOrders(result.data.orders || []);
       } else {
-        setErrorMessage(result.data.message || "Unable to fetch your orders.");
+        setErrorMessage(result.data.message || "Unable to fetch your pet orders.");
       }
     } catch (error) {
       console.log("Get Orders Error:", error);
@@ -54,60 +54,65 @@ export default function Order() {
   }, [serverUrl]);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#121217] flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#231F1D] flex flex-col justify-between">
       <Nav />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 flex-1 w-full">
         {/* Header */}
-        <div className="pb-6 mb-8 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="pb-6 mb-8 border-b border-[#EAE4DC] flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#FF462D] mb-1">
-              <Package size={14} />
-              <span>Account Hub</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAF2EE] text-[#3D6857] text-xs font-bold uppercase tracking-wider mb-2">
+              <Package size={13} />
+              <span>Pet Parent Hub</span>
             </div>
-            <h1 className="font-heading font-black text-3xl sm:text-4xl uppercase tracking-tight text-neutral-950">
-              MY ORDER ARCHIVE
+            <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-[#231F1D] tracking-tight">
+              My Pet Orders 🐾
             </h1>
           </div>
 
           <Link
             to="/collections"
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-600 hover:text-neutral-950"
+            className="flex items-center gap-2 text-xs font-bold text-[#6E675F] hover:text-[#3D6857] transition-colors"
           >
-            <span>Explore Drops</span>
+            <span>Explore Pet Collections</span>
             <ArrowRight size={14} />
           </Link>
         </div>
 
-        {/* Content */}
         {loading ? (
           <div className="py-24 text-center">
-            <div className="w-8 h-8 rounded-full border-2 border-[#FF462D] border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="font-heading text-xs uppercase tracking-widest text-neutral-500 font-bold">
-              Fetching Your Orders...
+            <div className="w-8 h-8 rounded-full border-2 border-[#3D6857] border-t-transparent animate-spin mx-auto mb-4" />
+            <p className="font-display text-xs uppercase tracking-wider text-[#6E675F] font-bold">
+              Fetching Your Pet Deliveries...
             </p>
           </div>
         ) : errorMessage ? (
-          <div className="p-6 rounded-3xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold text-center max-w-md mx-auto">
-            <AlertCircle size={24} className="mx-auto mb-2" />
-            <p>{errorMessage}</p>
+          <div className="p-6 rounded-3xl bg-white border border-rose-200 text-center max-w-md mx-auto">
+            <AlertCircle size={28} className="text-rose-500 mx-auto mb-2" />
+            <p className="text-sm font-bold text-[#231F1D] mb-4">{errorMessage}</p>
+            <button
+              onClick={getUserOrders}
+              className="pill-button px-6 py-2.5 rounded-full bg-[#3D6857] text-white text-xs font-bold"
+            >
+              Try Again
+            </button>
           </div>
         ) : orders.length === 0 ? (
-          <div className="py-20 text-center bg-white rounded-3xl border border-neutral-200 p-8 max-w-lg mx-auto">
-            <div className="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-4 text-neutral-400">
-              <ShoppingBag size={28} />
+          <div className="py-20 text-center bg-white rounded-3xl border border-[#EAE4DC] p-8 max-w-xl mx-auto">
+            <div className="w-20 h-20 rounded-full bg-[#EAF2EE] text-[#3D6857] flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">🐾</span>
             </div>
-            <h2 className="font-heading font-black text-2xl uppercase text-neutral-900 mb-2">
-              No Orders Placed Yet
+            <h2 className="font-display font-bold text-2xl text-[#231F1D] mb-2">
+              No Orders Found Yet
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 mb-6">
-              You haven't claimed any FurEver drops yet. Browse our genesis collection to start your streetwear rotation.
+            <p className="text-xs sm:text-sm text-[#6E675F] mb-6">
+              You haven't placed an order yet. Treat your pet to our cushioned harnesses or cozy knits!
             </p>
             <button
               onClick={() => navigate("/collections")}
-              className="px-8 py-4 rounded-full bg-[#0D0D11] hover:bg-[#FF462D] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all shadow-lg cursor-pointer"
+              className="pill-button px-8 py-3.5 rounded-full bg-[#3D6857] hover:bg-[#2D5042] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
             >
-              Explore Drops
+              Shop Pet Collections 🐾
             </button>
           </div>
         ) : (
@@ -115,81 +120,71 @@ export default function Order() {
             {orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white rounded-3xl border border-neutral-200/80 shadow-sm p-6 sm:p-8 space-y-6"
+                className="bg-white rounded-3xl border border-[#EAE4DC] p-6 sm:p-8 shadow-2xs space-y-6"
               >
                 {/* Order Top Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-100 text-xs text-neutral-500">
-                  <div className="space-y-1">
-                    <p className="font-mono text-[11px] font-bold text-neutral-400">
-                      ORDER ID: #{order._id.slice(-8).toUpperCase()}
-                    </p>
-                    <p className="text-neutral-700 font-semibold">
-                      Placed on {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </p>
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#F4EFEA]">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#6E675F]">
+                      Order ID
+                    </span>
+                    <p className="font-mono text-xs font-bold text-[#231F1D]">#{order._id}</p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-neutral-100 text-neutral-800">
-                      Status: {order.status}
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                        order.payment
-                          ? "bg-[#00E599]/15 text-[#00A878]"
-                          : "bg-amber-100 text-amber-800"
-                      }`}
-                    >
-                      {order.paymentMethod === "COD" ? "Cash On Delivery" : order.payment ? "Paid Online" : "Payment Pending"}
-                    </span>
+                  <div className="flex items-center gap-4 text-xs text-[#6E675F]">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={14} className="text-[#3D6857]" />
+                      <span>{new Date(order.date || Date.now()).toLocaleDateString()}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <CreditCard size={14} className="text-[#3D6857]" />
+                      <span className="font-semibold uppercase">{order.paymentMethod || "COD"}</span>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EE] text-[#3D6857]">
+                    <span className="w-2 h-2 rounded-full bg-[#3D6857]" />
+                    <span>{order.status || "Packing with Love 🐾"}</span>
                   </div>
                 </div>
 
-                {/* Items in this Order */}
-                <div className="space-y-3">
+                {/* Items */}
+                <div className="space-y-4">
                   {order.items?.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-4 sm:gap-6">
+                    <div key={idx} className="flex items-center gap-4">
                       <img
-                        src={item.image}
+                        src={item.image || item.image1}
                         alt={item.name}
-                        className="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl object-cover bg-neutral-100 shrink-0"
+                        className="w-16 h-16 rounded-2xl object-cover bg-[#F4EFEA] border border-[#EAE4DC]"
                       />
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-heading font-bold text-sm sm:text-base text-neutral-900 truncate">
+                        <h4 className="font-display font-bold text-sm text-[#231F1D] truncate">
                           {item.name}
                         </h4>
-                        <div className="flex items-center gap-3 text-xs text-neutral-500 mt-1">
-                          <span className="font-bold text-neutral-700">Size: {item.size}</span>
-                          <span>•</span>
-                          <span>Qty: {item.quantity}</span>
-                        </div>
+                        <p className="text-xs text-[#6E675F]">
+                          Size: {item.size} • Qty: {item.quantity}
+                        </p>
                       </div>
-                      <div className="text-right">
-                        <span className="font-heading font-bold text-sm sm:text-base text-neutral-950">
-                          {currency}{item.price * item.quantity}
-                        </span>
-                      </div>
+                      <span className="font-display font-bold text-sm text-[#231F1D]">
+                        {currency}{item.price * item.quantity}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                {/* Footer Details: Delivery address & Total */}
-                <div className="pt-4 border-t border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
-                  <div className="flex items-start gap-2 text-neutral-500 max-w-sm">
-                    <MapPin size={15} className="text-[#FF462D] shrink-0 mt-0.5" />
+                {/* Footer of Order Card */}
+                <div className="pt-4 border-t border-[#F4EFEA] flex flex-wrap items-center justify-between gap-4 text-xs text-[#6E675F]">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={14} className="text-[#3D6857]" />
                     <span>
-                      {order.address?.street}, {order.address?.city}, {order.address?.state} - {order.address?.zipcode}
+                      {order.address?.street}, {order.address?.city}, {order.address?.zipcode}
                     </span>
                   </div>
 
-                  <div className="flex items-baseline gap-2 text-right">
-                    <span className="text-neutral-500 font-medium">Order Total:</span>
-                    <span className="font-heading font-black text-xl text-[#FF462D]">
-                      {currency}{order.amount}
-                    </span>
+                  <div className="flex items-center gap-2 font-display font-black text-base text-[#231F1D]">
+                    <span>Total Paid:</span>
+                    <span className="text-[#3D6857]">{currency}{order.amount}</span>
                   </div>
                 </div>
               </div>

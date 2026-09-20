@@ -28,7 +28,7 @@ const useBrandFonts = () => {
 /*  profile. Drawn with framer-motion's pathLength so it feels hand-   */
 /*  sketched rather than like stock iconography.                       */
 /* ------------------------------------------------------------------ */
-const FoxMark = ({ className = "", stroke = "#FF6A3D", duration = 2.2, delay = 0 }) => (
+const FoxMark = ({ className = "", stroke = "#DC8E90", duration = 2.2, delay = 0 }) => (
   <svg
     viewBox="0 0 420 380"
     fill="none"
@@ -102,7 +102,7 @@ export default function About() {
 
   return (
     <div
-      className="w-full overflow-x-hidden"
+      className="w-full overflow-x-hidden bg-[#FAF6F2]"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
       <Nav />
@@ -113,21 +113,21 @@ export default function About() {
         {/* ============================================================ */}
         <section
           className="relative w-full min-h-[92vh] flex flex-col justify-between overflow-hidden"
-          style={{ backgroundColor: "#14172E" }}
+          style={{ backgroundColor: "#2B2730" }}
         >
           {/* ambient gradient glow */}
           <div
             className="pointer-events-none absolute -top-32 right-[-10%] w-[60vw] h-[60vw] max-w-[720px] max-h-[720px] rounded-full blur-3xl"
             style={{
               background:
-                "radial-gradient(circle, rgba(255,106,61,0.20) 0%, rgba(255,106,61,0.00) 70%)",
+                "radial-gradient(circle, rgba(220,142,144,0.25) 0%, rgba(220,142,144,0.00) 70%)",
             }}
           />
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               backgroundImage:
-                "linear-gradient(180deg, rgba(20,23,46,0) 60%, rgba(20,23,46,0.9) 100%)",
+                "linear-gradient(180deg, rgba(43,39,48,0) 60%, rgba(43,39,48,0.95) 100%)",
             }}
           />
 
@@ -136,7 +136,7 @@ export default function About() {
             style={{ y: foxDrift }}
             className="absolute top-[10%] right-[2%] w-[46vw] max-w-[520px] min-w-[260px] opacity-[0.55]"
           >
-            <FoxMark stroke="#FF6A3D" duration={2.6} delay={0.4} />
+            <FoxMark stroke="#DC8E90" duration={2.6} delay={0.4} />
           </motion.div>
 
           <div className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-10 lg:px-20 pt-28 lg:pt-24">
@@ -145,7 +145,7 @@ export default function About() {
               animate="show"
               variants={fadeUp}
               className="uppercase tracking-[0.35em] text-xs sm:text-sm mb-6 sm:mb-8"
-              style={{ color: "#FF6A3D" }}
+              style={{ color: "#FDAC98" }}
             >
               FurEver — Animal-Inspired Lifestyle
             </motion.p>
@@ -165,7 +165,7 @@ export default function About() {
               WEAR WHAT
               <br />
               YOU{" "}
-              <span style={{ color: "#FF6A3D", fontStyle: "italic" }}>
+              <span style={{ color: "#DC8E90", fontStyle: "italic" }}>
                 believe
               </span>{" "}
               IN.
@@ -177,7 +177,7 @@ export default function About() {
               custom={2}
               variants={fadeUp}
               className="mt-8 max-w-xl text-base sm:text-lg leading-relaxed"
-              style={{ color: "#A7A6B8" }}
+              style={{ color: "#D3CAD7" }}
             >
               FurEver is an animal-inspired lifestyle brand creating things
               people genuinely want to wear — while building a business with
@@ -193,8 +193,8 @@ export default function About() {
             >
               <button
                 onClick={scrollToStory}
-                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm sm:text-base font-medium transition-transform duration-300 hover:-translate-y-0.5"
-                style={{ backgroundColor: "#FF6A3D", color: "#14172E" }}
+                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm sm:text-base font-bold transition-transform duration-300 hover:-translate-y-0.5 shadow-sm"
+                style={{ backgroundColor: "#DC8E90", color: "#FFFFFF" }}
               >
                 Our Story
                 <ChevronDown
@@ -242,7 +242,7 @@ export default function About() {
         <section
           ref={storyRef}
           className="relative w-full py-28 sm:py-36 lg:py-44 px-6 sm:px-10 lg:px-20"
-          style={{ backgroundColor: "#FAF7F1" }}
+          style={{ backgroundColor: "#FAF6F2" }}
         >
           <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-10 items-start">
             {/* copy column */}
@@ -252,8 +252,8 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.6 }}
-                className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-8"
-                style={{ color: "#FF6A3D" }}
+                className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-8 font-bold"
+                style={{ color: "#DC8E90" }}
               >
                 Our Story
               </motion.p>
@@ -264,7 +264,7 @@ export default function About() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: 0.05 }}
                 className="text-2xl sm:text-3xl lg:text-4xl leading-snug"
-                style={{ fontFamily: "'Fraunces', serif", fontWeight: 400, color: "#14172E" }}
+                style={{ fontFamily: "'Fraunces', serif", fontWeight: 400, color: "#2B2730" }}
               >
                 People care about animals. People also want to buy things
                 that feel like a reflection of who they are. FurEver exists
@@ -277,11 +277,11 @@ export default function About() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="my-12 sm:my-16 pl-6 sm:pl-8 border-l-2"
-                style={{ borderColor: "#FF6A3D" }}
+                style={{ borderColor: "#DC8E90" }}
               >
                 <p
                   className="text-xl sm:text-2xl lg:text-3xl leading-snug italic"
-                  style={{ fontFamily: "'Fraunces', serif", color: "#14172E" }}
+                  style={{ fontFamily: "'Fraunces', serif", color: "#2B2730" }}
                 >
                   "Impact should not be something added after the business
                   is built. It should be part of the way the business is
@@ -295,7 +295,7 @@ export default function About() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: 0.15 }}
                 className="space-y-6 text-base sm:text-lg leading-relaxed max-w-xl"
-                style={{ color: "#5B5A68" }}
+                style={{ color: "#58545F" }}
               >
                 <p>
                   We're starting with clothing — but the product always
@@ -312,11 +312,11 @@ export default function About() {
                     style={{
                       fontFamily: "'Fraunces', serif",
                       fontStyle: "italic",
-                      color: "#FF6A3D",
+                      color: "#DC8E90",
                       fontSize: "1.3em",
                     }}
                   >
-                    15%
+                    10%
                   </span>{" "}
                   of net profits toward animal welfare — not as an
                   afterthought, but as part of the design.
@@ -334,16 +334,16 @@ export default function About() {
                 className="absolute inset-0 rounded-[2rem] overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(155deg, #14172E 0%, #1E2244 55%, #14172E 100%)",
+                    "linear-gradient(155deg, #2B2730 0%, #3D3845 55%, #2B2730 100%)",
                 }}
               >
                 <div
                   className="absolute -bottom-16 -left-16 w-72 h-72 rounded-full blur-3xl"
-                  style={{ background: "rgba(255,106,61,0.25)" }}
+                  style={{ background: "rgba(220,142,144,0.25)" }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-10">
                   <FoxMark
-                    stroke="#FAF7F1"
+                    stroke="#FAF6F2"
                     className="w-full max-w-[300px] opacity-90"
                     duration={2}
                   />
@@ -355,12 +355,12 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.7, delay: 0.25 }}
-                className="absolute -bottom-8 -left-6 sm:-left-10 right-10 sm:right-16 rounded-2xl px-6 py-5 shadow-xl"
+                className="absolute -bottom-8 -left-6 sm:-left-10 right-10 sm:right-16 rounded-2xl px-6 py-5 shadow-xl border border-[#EDE4DD]"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
                 <p
-                  className="text-sm sm:text-base leading-snug"
-                  style={{ color: "#14172E" }}
+                  className="text-sm sm:text-base leading-snug font-bold"
+                  style={{ color: "#2B2730" }}
                 >
                   Product first. Purpose built in. Nothing bolted on
                   afterward.
@@ -375,13 +375,13 @@ export default function About() {
         {/* ============================================================ */}
         <section
           className="relative w-full py-28 sm:py-36 lg:py-44 px-6 sm:px-10 lg:px-20 overflow-hidden"
-          style={{ backgroundColor: "#14172E" }}
+          style={{ backgroundColor: "#2B2730" }}
         >
           <div
             className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[900px] max-h-[900px] rounded-full blur-3xl opacity-40"
             style={{
               background:
-                "radial-gradient(circle, rgba(255,106,61,0.14) 0%, rgba(255,106,61,0) 70%)",
+                "radial-gradient(circle, rgba(220,142,144,0.18) 0%, rgba(220,142,144,0) 70%)",
             }}
           />
 
@@ -392,7 +392,7 @@ export default function About() {
             transition={{ duration: 1 }}
             className="absolute -bottom-10 -right-10 w-[40vw] max-w-[380px] min-w-[220px] scale-x-[-1]"
           >
-            <FoxMark stroke="#FF6A3D" duration={2.2} />
+            <FoxMark stroke="#DC8E90" duration={2.2} />
           </motion.div>
 
           <div className="relative z-10 max-w-4xl mx-auto text-center">
@@ -401,8 +401,8 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-8"
-              style={{ color: "#FF6A3D" }}
+              className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-8 font-bold"
+              style={{ color: "#FDAC98" }}
             >
               What's Next
             </motion.p>
@@ -417,12 +417,12 @@ export default function About() {
                 fontFamily: "'Fraunces', serif",
                 fontWeight: 400,
                 fontSize: "clamp(1.9rem, 4.5vw, 3.4rem)",
-                color: "#FAF7F1",
+                color: "#FAF6F2",
               }}
             >
               FurEver begins with clothing.
               <br />
-              <span style={{ fontStyle: "italic", color: "#FF6A3D" }}>
+              <span style={{ fontStyle: "italic", color: "#DC8E90" }}>
                 The ambition is bigger.
               </span>
             </motion.h2>
@@ -433,7 +433,7 @@ export default function About() {
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, delay: 0.1 }}
               className="mt-8 text-base sm:text-lg leading-relaxed max-w-xl mx-auto"
-              style={{ color: "#A7A6B8" }}
+              style={{ color: "#D3CAD7" }}
             >
               Over time, we want FurEver to grow beyond apparel — into
               products, experiences, and collaborations that stay connected
@@ -466,8 +466,8 @@ export default function About() {
             >
               <button
                 onClick={() => navigate("/collections")}
-                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm sm:text-base font-medium transition-transform duration-300 hover:-translate-y-0.5"
-                style={{ backgroundColor: "#FF6A3D", color: "#14172E" }}
+                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm sm:text-base font-bold transition-transform duration-300 hover:-translate-y-0.5 shadow-md cursor-pointer"
+                style={{ backgroundColor: "#DC8E90", color: "#FFFFFF" }}
               >
                 Explore Collection
                 <MoveRight
@@ -478,8 +478,8 @@ export default function About() {
 
               <button
                 onClick={() => navigate("/contact")}
-                className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm sm:text-base font-medium border transition-colors duration-300 hover:bg-white/5"
-                style={{ borderColor: "#FAF7F1", color: "#FAF7F1" }}
+                className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm sm:text-base font-bold border transition-colors duration-300 hover:bg-white/10 cursor-pointer"
+                style={{ borderColor: "#EDE4DD", color: "#FAF6F2" }}
               >
                 Get in Touch
               </button>

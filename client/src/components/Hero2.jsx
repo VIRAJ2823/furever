@@ -88,7 +88,7 @@ export default function Hero() {
 
       {/* the fox — large, bled off the right edge, sitting behind the type */}
       <div className="pointer-events-none absolute top-1/2 right-[-6%] sm:right-[-4%] -translate-y-1/2 w-[92vw] sm:w-[58vw] max-w-[820px] min-w-[420px] opacity-90">
-        <FoxMark stroke="#FF6A3D" opacity={0.85} />
+        <FoxMark stroke="#DC8E90" opacity={0.85} />
       </div>
 
       {/* vertical brand statement — the subtle detail, not a badge */}
@@ -99,12 +99,12 @@ export default function Hero() {
           transition={{ duration: 1, delay: 1.4 }}
           className="uppercase tracking-[0.35em] text-[11px] whitespace-nowrap"
           style={{
-            color: "#A7A6B8",
+            color: "#D3CAD7",
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
           }}
         >
-          15% of net profits &nbsp;·&nbsp; toward animal welfare
+          10% of net profits &nbsp;·&nbsp; toward animal welfare
         </motion.p>
       </div>
 
@@ -116,8 +116,8 @@ export default function Hero() {
             animate="show"
             custom={0}
             variants={fadeUp}
-            className="uppercase tracking-[0.35em] text-xs sm:text-sm mb-6 sm:mb-8"
-            style={{ color: "#FF6A3D" }}
+            className="uppercase tracking-[0.35em] text-xs sm:text-sm mb-6 sm:mb-8 font-bold"
+            style={{ color: "#FDAC98" }}
           >
             FurEver — First Chapter
           </motion.p>
@@ -139,7 +139,7 @@ export default function Hero() {
               custom={2}
               variants={fadeUp}
               className="block overflow-hidden"
-              style={{ color: "#FF6A3D", fontStyle: "italic" }}
+              style={{ color: "#DC8E90", fontStyle: "italic" }}
             >
               INSTINCT.
             </motion.span>
@@ -151,7 +151,7 @@ export default function Hero() {
             custom={3}
             variants={fadeUp}
             className="mt-7 sm:mt-8 max-w-md text-base sm:text-lg leading-relaxed"
-            style={{ color: "#A7A6B8" }}
+            style={{ color: "#D3CAD7" }}
           >
             Animal-inspired essentials for people who trust their instincts —
             and want the things they wear to mean a little more.
@@ -166,8 +166,8 @@ export default function Hero() {
           >
             <button
               onClick={() => navigate("/collections")}
-              className="group inline-flex items-center gap-3 rounded-full px-7 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-medium transition-transform duration-300 hover:-translate-y-0.5"
-              style={{ backgroundColor: "#FF6A3D", color: "#14172E" }}
+              className="group inline-flex items-center gap-3 rounded-full px-7 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold transition-transform duration-300 hover:-translate-y-0.5 shadow-md cursor-pointer"
+              style={{ backgroundColor: "#DC8E90", color: "#FFFFFF" }}
             >
               Explore Collection
               <ArrowUpRight size={18} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -175,17 +175,17 @@ export default function Hero() {
 
             <button
               onClick={() => navigate("/about")}
-              className="group relative inline-flex items-center text-sm sm:text-base font-medium pb-1"
-              style={{ color: "#FAF7F1" }}
+              className="group relative inline-flex items-center text-sm sm:text-base font-medium pb-1 cursor-pointer"
+              style={{ color: "#FAF6F2" }}
             >
               Our Story
               <span
                 className="absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-100 transition-transform duration-300 group-hover:scale-x-0"
-                style={{ backgroundColor: "#FAF7F1" }}
+                style={{ backgroundColor: "#FAF6F2" }}
               />
               <span
                 className="absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
-                style={{ backgroundColor: "#FF6A3D" }}
+                style={{ backgroundColor: "#DC8E90" }}
               />
             </button>
           </motion.div>

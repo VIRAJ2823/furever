@@ -44,7 +44,7 @@ const fadeUp = {
 /* ------------------------------------------------------------------ */
 /*  Signature fox mark, shared with About.jsx / Hero.jsx                */
 /* ------------------------------------------------------------------ */
-const FoxMark = ({ className = "", stroke = "#FF6A3D", duration = 2.4, delay = 0.3 }) => (
+const FoxMark = ({ className = "", stroke = "#DC8E90", duration = 2.4, delay = 0.3 }) => (
   <svg viewBox="0 0 420 380" fill="none" className={className} aria-hidden="true">
     <motion.path
       d="M 300 40
@@ -95,57 +95,43 @@ function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (status === "loading") return;
 
-    const { name, email, subject, message } = formData;
-
-    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
+    if (!formData.name || !formData.email || !formData.message) {
       setStatus("error");
-      setErrorMsg("Please fill in every field before sending.");
+      setErrorMsg("Please fill in your name, email, and message.");
       return;
     }
-    if (!isValidEmail(email)) {
-      setStatus("error");
-      setErrorMsg("That email address doesn't look quite right.");
-      return;
-    }
-
-    setStatus("loading");
-    setErrorMsg("");
 
     try {
-      const response = await axios.post(
-        `${serverUrl}/api/contact`,
-        {
-          name: name.trim(),
-          email: email.trim(),
-          subject,
-          message: message.trim(),
-        },
-        { withCredentials: true }
-      );
+      setStatus("loading");
+      setErrorMsg("");
 
-      if (response?.data?.success === false) {
-        throw new Error(response?.data?.message || "Something went wrong.");
+      const response = await axios.post(`${serverUrl}/api/contact`, formData);
+
+      if (response.data?.success) {
+        setStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setStatus("error");
+        setErrorMsg(response.data?.message || "Something went wrong. Please try again.");
       }
-
-      setStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
+      console.error(err);
       setStatus("error");
       setErrorMsg(
-        err?.response?.data?.message ||
-          "We couldn't send your message right now. Please try again in a moment."
+        err.response?.data?.message ||
+          "Could not send your message. Please try again later or call us directly."
       );
     }
   };
 
   return (
-    <div className="w-full overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div
+      className="w-full overflow-x-hidden bg-[#FAF6F2]"
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+    >
       <Nav />
 
       <main className="w-full">
@@ -154,17 +140,17 @@ function Contact() {
         {/* ============================================================ */}
         <section
           className="relative w-full min-h-[88vh] sm:min-h-[92vh] lg:min-h-[94vh] flex flex-col justify-between overflow-hidden"
-          style={{ backgroundColor: "#14172E" }}
+          style={{ backgroundColor: "#2B2730" }}
         >
           {/* Ambient lighting glow */}
           <div
             className="pointer-events-none absolute -top-24 left-[-6%] w-[50vw] h-[50vw] max-w-[560px] max-h-[560px] rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(255,106,61,0.16) 0%, rgba(255,106,61,0) 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(220,142,144,0.22) 0%, rgba(220,142,144,0) 70%)" }}
           />
           
           {/* Background Fox Graphic */}
           <div className="pointer-events-none absolute top-1/2 right-[-8%] -translate-y-1/2 w-[70vw] sm:w-[36vw] max-w-[460px] min-w-[260px] opacity-[0.35]">
-            <FoxMark stroke="#FF6A3D" />
+            <FoxMark stroke="#DC8E90" />
           </div>
 
           {/* Spacer to balance flex vertical alignment */}
@@ -177,8 +163,8 @@ function Contact() {
               animate="show"
               custom={0}
               variants={fadeUp}
-              className="uppercase tracking-[0.35em] text-xs sm:text-sm mb-6 font-medium"
-              style={{ color: "#FF6A3D" }}
+              className="uppercase tracking-[0.35em] text-xs sm:text-sm mb-6 font-bold"
+              style={{ color: "#FDAC98" }}
             >
               FurEver — Say Hello
             </motion.p>
@@ -196,7 +182,7 @@ function Contact() {
               }}
             >
               WE'RE{" "}
-              <span style={{ color: "#FF6A3D", fontStyle: "italic" }}>all ears.</span>
+              <span style={{ color: "#DC8E90", fontStyle: "italic" }}>all ears.</span>
             </motion.h1>
 
             <motion.p
@@ -205,7 +191,7 @@ function Contact() {
               custom={2}
               variants={fadeUp}
               className="mt-7 max-w-xl text-base sm:text-lg lg:text-xl leading-relaxed"
-              style={{ color: "#A7A6B8" }}
+              style={{ color: "#D3CAD7" }}
             >
               Questions, ideas, feedback, or just a hello — every message
               reaches an actual person on the FurEver team.
@@ -218,14 +204,14 @@ function Contact() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 1 }}
             className="relative z-10 pb-8 px-6 sm:px-12 lg:px-20 xl:px-28 2xl:px-36 flex items-center gap-3 text-xs uppercase tracking-[0.25em]"
-            style={{ color: "#8A8996" }}
+            style={{ color: "#A97882" }}
           >
             <span>Scroll to explore</span>
             <motion.div
               animate={{ y: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
             >
-              <ChevronDown size={14} style={{ color: "#FF6A3D" }} />
+              <ChevronDown size={14} style={{ color: "#DC8E90" }} />
             </motion.div>
           </motion.div>
         </section>
@@ -235,7 +221,7 @@ function Contact() {
         {/* ============================================================ */}
         <section
           className="relative w-full py-24 sm:py-32 lg:py-40 xl:py-48 px-6 sm:px-12 lg:px-20 xl:px-28 2xl:px-36"
-          style={{ backgroundColor: "#FAF7F1" }}
+          style={{ backgroundColor: "#FAF6F2" }}
         >
           {/* Unboxed Full-Width Grid */}
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 xl:gap-28 items-start">
@@ -247,8 +233,8 @@ function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.6 }}
-                className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-6 sm:mb-8 font-semibold"
-                style={{ color: "#FF6A3D" }}
+                className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-6 sm:mb-8 font-bold"
+                style={{ color: "#DC8E90" }}
               >
                 Get In Touch
               </motion.p>
@@ -263,7 +249,7 @@ function Contact() {
                   fontFamily: "'Fraunces', serif",
                   fontWeight: 400,
                   fontSize: "clamp(2.2rem, 4vw, 3.75rem)",
-                  color: "#14172E",
+                  color: "#2B2730",
                 }}
               >
                 The conversations behind FurEver.
@@ -275,7 +261,7 @@ function Contact() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="mt-6 sm:mt-8 text-lg sm:text-xl leading-relaxed max-w-lg"
-                style={{ color: "#5B5A68" }}
+                style={{ color: "#58545F" }}
               >
                 Whether you're curious about a product, have an idea for a
                 collaboration, or just want to say hello — we're listening and ready to build together.
@@ -287,11 +273,11 @@ function Contact() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: 0.18 }}
                 className="mt-12 sm:mt-16 pl-6 sm:pl-8 border-l-2"
-                style={{ borderColor: "#FF6A3D" }}
+                style={{ borderColor: "#DC8E90" }}
               >
                 <p
                   className="text-2xl sm:text-3xl xl:text-4xl leading-snug italic"
-                  style={{ fontFamily: "'Fraunces', serif", color: "#14172E" }}
+                  style={{ fontFamily: "'Fraunces', serif", color: "#2B2730" }}
                 >
                   Wear something.
                   <br />
@@ -307,7 +293,7 @@ function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.7 }}
-                className="relative rounded-[2rem] sm:rounded-[2.75rem] p-8 sm:p-12 lg:p-16 xl:p-20 shadow-[0_30px_80px_-20px_rgba(20,23,46,0.15)] border border-stone-200/60 w-full"
+                className="relative rounded-[2rem] sm:rounded-[2.75rem] p-8 sm:p-12 lg:p-16 xl:p-20 shadow-[0_30px_80px_-20px_rgba(43,39,48,0.08)] border border-[#EDE4DD] w-full"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
                 <AnimatePresence mode="wait">
@@ -322,24 +308,24 @@ function Contact() {
                     >
                       <div
                         className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
-                        style={{ backgroundColor: "rgba(255,106,61,0.12)" }}
+                        style={{ backgroundColor: "rgba(220,142,144,0.15)" }}
                       >
-                        <CheckCircle2 size={32} style={{ color: "#FF6A3D" }} />
+                        <CheckCircle2 size={32} style={{ color: "#DC8E90" }} />
                       </div>
                       <h3
                         className="text-3xl sm:text-4xl mb-4"
-                        style={{ fontFamily: "'Fraunces', serif", color: "#14172E" }}
+                        style={{ fontFamily: "'Fraunces', serif", color: "#2B2730" }}
                       >
                         Message sent.
                       </h3>
-                      <p className="text-base sm:text-lg max-w-md leading-relaxed" style={{ color: "#5B5A68" }}>
+                      <p className="text-base sm:text-lg max-w-md leading-relaxed" style={{ color: "#58545F" }}>
                         Thank you for reaching out — we read every message,
                         and someone from FurEver will get back to you soon.
                       </p>
                       <button
                         onClick={() => setStatus("idle")}
-                        className="mt-10 text-base font-semibold underline underline-offset-8 transition-opacity hover:opacity-80"
-                        style={{ color: "#FF6A3D" }}
+                        className="mt-10 text-base font-semibold underline underline-offset-8 transition-opacity hover:opacity-80 cursor-pointer"
+                        style={{ color: "#DC8E90" }}
                       >
                         Send another message
                       </button>
@@ -360,7 +346,7 @@ function Contact() {
                           <label
                             htmlFor="name"
                             className="block text-xs uppercase tracking-[0.2em] mb-3 font-semibold"
-                            style={{ color: "#8A8996" }}
+                            style={{ color: "#7E7785" }}
                           >
                             Name
                           </label>
@@ -371,8 +357,8 @@ function Contact() {
                             value={formData.name}
                             onChange={handleChange}
                             placeholder="Your name"
-                            className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#FF6A3D] focus:ring-4 focus:ring-[#FF6A3D]/10"
-                            style={{ borderColor: "#E7E3D9", color: "#14172E", backgroundColor: "#FAF7F1" }}
+                            className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#DC8E90] focus:ring-4 focus:ring-[#DC8E90]/10"
+                            style={{ borderColor: "#EDE4DD", color: "#2B2730", backgroundColor: "#FAF6F2" }}
                           />
                         </div>
 
@@ -380,7 +366,7 @@ function Contact() {
                           <label
                             htmlFor="email"
                             className="block text-xs uppercase tracking-[0.2em] mb-3 font-semibold"
-                            style={{ color: "#8A8996" }}
+                            style={{ color: "#7E7785" }}
                           >
                             Email
                           </label>
@@ -391,8 +377,8 @@ function Contact() {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="you@example.com"
-                            className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#FF6A3D] focus:ring-4 focus:ring-[#FF6A3D]/10"
-                            style={{ borderColor: "#E7E3D9", color: "#14172E", backgroundColor: "#FAF7F1" }}
+                            className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#DC8E90] focus:ring-4 focus:ring-[#DC8E90]/10"
+                            style={{ borderColor: "#EDE4DD", color: "#2B2730", backgroundColor: "#FAF6F2" }}
                           />
                         </div>
                       </div>
@@ -401,7 +387,7 @@ function Contact() {
                         <label
                           htmlFor="subject"
                           className="block text-xs uppercase tracking-[0.2em] mb-3 font-semibold"
-                          style={{ color: "#8A8996" }}
+                          style={{ color: "#7E7785" }}
                         >
                           Subject
                         </label>
@@ -411,8 +397,8 @@ function Contact() {
                             name="subject"
                             value={formData.subject}
                             onChange={handleChange}
-                            className="w-full appearance-none rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#FF6A3D] focus:ring-4 focus:ring-[#FF6A3D]/10 cursor-pointer"
-                            style={{ borderColor: "#E7E3D9", color: "#14172E", backgroundColor: "#FAF7F1" }}
+                            className="w-full appearance-none rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#DC8E90] focus:ring-4 focus:ring-[#DC8E90]/10 cursor-pointer"
+                            style={{ borderColor: "#EDE4DD", color: "#2B2730", backgroundColor: "#FAF6F2" }}
                           >
                             <option value="" disabled>
                               Choose a reason for contact
@@ -426,7 +412,7 @@ function Contact() {
                           <ChevronDown
                             size={20}
                             className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2"
-                            style={{ color: "#8A8996" }}
+                            style={{ color: "#7E7785" }}
                           />
                         </div>
                       </div>
@@ -435,7 +421,7 @@ function Contact() {
                         <label
                           htmlFor="message"
                           className="block text-xs uppercase tracking-[0.2em] mb-3 font-semibold"
-                          style={{ color: "#8A8996" }}
+                          style={{ color: "#7E7785" }}
                         >
                           Message
                         </label>
@@ -446,8 +432,8 @@ function Contact() {
                           value={formData.message}
                           onChange={handleChange}
                           placeholder="Tell us what's on your mind..."
-                          className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#FF6A3D] focus:ring-4 focus:ring-[#FF6A3D]/10 resize-none"
-                          style={{ borderColor: "#E7E3D9", color: "#14172E", backgroundColor: "#FAF7F1" }}
+                          className="w-full rounded-2xl px-5 py-4 sm:py-5 text-base sm:text-lg outline-none border transition-all duration-300 focus:border-[#DC8E90] focus:ring-4 focus:ring-[#DC8E90]/10 resize-none"
+                          style={{ borderColor: "#EDE4DD", color: "#2B2730", backgroundColor: "#FAF6F2" }}
                         />
                       </div>
 
@@ -458,10 +444,10 @@ function Contact() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -6 }}
                             className="flex items-center gap-3 rounded-2xl px-5 py-4"
-                            style={{ backgroundColor: "rgba(255,106,61,0.08)" }}
+                            style={{ backgroundColor: "rgba(220,142,144,0.12)" }}
                           >
-                            <AlertCircle size={20} className="shrink-0" style={{ color: "#FF6A3D" }} />
-                            <p className="text-base font-medium" style={{ color: "#14172E" }}>
+                            <AlertCircle size={20} className="shrink-0" style={{ color: "#DC8E90" }} />
+                            <p className="text-base font-medium" style={{ color: "#2B2730" }}>
                               {errorMsg}
                             </p>
                           </motion.div>
@@ -472,8 +458,8 @@ function Contact() {
                         <button
                           type="submit"
                           disabled={status === "loading"}
-                          className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-10 py-5 text-base sm:text-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-70 disabled:hover:translate-y-0"
-                          style={{ backgroundColor: "#FF6A3D", color: "#14172E" }}
+                          className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-10 py-5 text-base sm:text-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-70 disabled:hover:translate-y-0 cursor-pointer shadow-md"
+                          style={{ backgroundColor: "#DC8E90", color: "#FFFFFF" }}
                         >
                           {status === "loading" ? (
                             <>
@@ -505,7 +491,7 @@ function Contact() {
         {/* ============================================================ */}
         <section
           className="relative w-full py-24 sm:py-32 lg:py-40 xl:py-44 px-6 sm:px-12 lg:px-20 xl:px-28 2xl:px-36"
-          style={{ backgroundColor: "#14172E" }}
+          style={{ backgroundColor: "#2B2730" }}
         >
           {/* Edge-to-Edge Wide Layout */}
           <div className="w-full">
@@ -514,8 +500,8 @@ function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-6 font-semibold"
-              style={{ color: "#FF6A3D" }}
+              className="uppercase tracking-[0.3em] text-xs sm:text-sm mb-6 font-bold"
+              style={{ color: "#FDAC98" }}
             >
               The People Behind FurEver
             </motion.p>
@@ -530,7 +516,7 @@ function Contact() {
                 fontFamily: "'Fraunces', serif",
                 fontWeight: 400,
                 fontSize: "clamp(2rem, 4vw, 3.5rem)",
-                color: "#FAF7F1",
+                color: "#FAF6F2",
               }}
             >
               Prefer to talk directly? Reach out to either of us.
@@ -550,19 +536,19 @@ function Contact() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: i * 0.12 }}
                   whileHover={{ y: -6, scale: 1.01 }}
-                  className="group relative flex items-center justify-between rounded-[2.25rem] px-8 sm:px-12 lg:px-16 py-10 sm:py-14 lg:py-16 border transition-all duration-300 hover:border-[#FF6A3D]/60 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] w-full"
-                  style={{ borderColor: "rgba(250,247,241,0.15)", backgroundColor: "rgba(255,255,255,0.02)" }}
+                  className="group relative flex items-center justify-between rounded-[2.25rem] px-8 sm:px-12 lg:px-16 py-10 sm:py-14 lg:py-16 border transition-all duration-300 hover:border-[#DC8E90]/60 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] w-full cursor-pointer"
+                  style={{ borderColor: "rgba(250,246,242,0.15)", backgroundColor: "rgba(255,255,255,0.03)" }}
                 >
                   <div>
                     <p
-                      className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 font-normal transition-colors duration-300 group-hover:text-[#FF6A3D]"
-                      style={{ fontFamily: "'Fraunces', serif", color: "#FAF7F1" }}
+                      className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 font-normal transition-colors duration-300 group-hover:text-[#DC8E90]"
+                      style={{ fontFamily: "'Fraunces', serif", color: "#FAF6F2" }}
                     >
                       {founder.name}
                     </p>
                     <p
                       className="text-base sm:text-lg lg:text-xl tracking-wider font-mono"
-                      style={{ color: "#A7A6B8" }}
+                      style={{ color: "#D3CAD7" }}
                     >
                       {founder.phone}
                     </p>
@@ -570,9 +556,9 @@ function Contact() {
 
                   <div
                     className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 shrink-0 shadow-lg"
-                    style={{ backgroundColor: "#FF6A3D" }}
+                    style={{ backgroundColor: "#DC8E90" }}
                   >
-                    <Phone className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: "#14172E" }} />
+                    <Phone className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: "#FFFFFF" }} />
                   </div>
                 </motion.a>
               ))}
@@ -585,7 +571,7 @@ function Contact() {
         {/* ============================================================ */}
         <section
           className="w-full py-24 sm:py-32 lg:py-36 px-6 sm:px-12 lg:px-20 text-center"
-          style={{ backgroundColor: "#FAF7F1" }}
+          style={{ backgroundColor: "#FAF6F2" }}
         >
           <motion.h3
             initial={{ opacity: 0, y: 20 }}
@@ -597,11 +583,11 @@ function Contact() {
               fontFamily: "'Fraunces', serif",
               fontWeight: 400,
               fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
-              color: "#14172E",
+              color: "#2B2730",
             }}
           >
             It all starts with{" "}
-            <span style={{ color: "#FF6A3D", fontStyle: "italic" }}>a message.</span>
+            <span style={{ color: "#DC8E90", fontStyle: "italic" }}>a message.</span>
           </motion.h3>
         </section>
       </main>

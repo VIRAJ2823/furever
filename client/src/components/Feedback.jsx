@@ -1,14 +1,11 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  MessageSquare,
   Heart,
   Star,
   ArrowRight,
-  PawPrint,
   CheckCircle2,
   Sparkles,
-  ShieldCheck,
   Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -38,14 +35,14 @@ export default function Feedback() {
       navigate("/login", {
         state: {
           from: "/",
-          message: "Please login to share your drop review.",
+          message: "Please login to share your pet review.",
         },
       });
       return;
     }
 
     if (!feedback.trim() || rating === 0) {
-      setErrorMessage("Please select a rating and write your thoughts.");
+      setErrorMessage("Please select a paw rating and write your feedback.");
       return;
     }
 
@@ -70,227 +67,136 @@ export default function Feedback() {
         setSubmitted(true);
         setFeedback("");
       } else {
-        setErrorMessage(result.data.message || "Failed to submit feedback.");
+        setErrorMessage(result.data.message || "Failed to submit review.");
       }
     } catch (error) {
-      console.log("Feedback Error:", error);
-      setErrorMessage("Something went wrong. Please try again.");
+      console.error("Feedback error:", error);
+      setErrorMessage(
+        error.response?.data?.message || "Failed to submit feedback. Please try again."
+      );
     } finally {
       setSending(false);
     }
   };
 
   return (
-    <section className="w-full bg-[#FAF8F5] py-20 sm:py-24 border-t border-neutral-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-14 sm:mb-16"
-        >
-          <p className="font-heading text-xs font-bold uppercase tracking-[0.25em] text-[#FF462D] mb-3">
-            Community & Culture
-          </p>
-
-          <h2 className="font-heading font-black text-3xl sm:text-5xl uppercase tracking-tight text-neutral-950">
-            SHAPED BY THE <span className="text-[#FF462D]">PACK</span>
-          </h2>
-          <p className="mt-4 max-w-xl mx-auto text-neutral-500 text-sm sm:text-base font-medium leading-relaxed">
-            Your voice directs our fabric choices, future drop cuts, and local animal shelter funding.
-          </p>
-        </motion.div>
-
-        {/* 2-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+    <section className="w-full bg-[#FAF8F5] py-16 sm:py-24 border-t border-[#EAE4DC]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="bg-white rounded-3xl border border-[#EAE4DC] p-8 sm:p-12 shadow-md relative overflow-hidden">
           
-          {/* LEFT: FEEDBACK SUBMISSION CARD */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="lg:col-span-6 bg-white rounded-3xl p-8 sm:p-10 border border-neutral-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-[#FF462D] mb-6">
-                <MessageSquare size={22} />
+          {/* Subtle decoration */}
+          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-[#EAF2EE] blur-3xl pointer-events-none" />
+
+          <div className="text-center max-w-xl mx-auto mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF3D6] text-[#8C6212] text-xs font-bold mb-3">
+              <span className="text-sm">🐾</span>
+              <span>The Sniff Test Community</span>
+            </div>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[#231F1D] tracking-tight">
+              Tell us what your pet thinks!
+            </h2>
+            <p className="text-xs sm:text-sm text-[#6E675F] mt-2">
+              Did your dog love the harness? Is your cat snoozing in our cozy knit? We read every single review.
+            </p>
+          </div>
+
+          {submitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-10"
+            >
+              <div className="w-16 h-16 rounded-full bg-[#EAF2EE] text-[#3D6857] flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 size={32} />
+              </div>
+              <h3 className="font-display font-bold text-2xl text-[#231F1D] mb-2">
+                Thank you for the review! 🐾
+              </h3>
+              <p className="text-sm text-[#6E675F] max-w-md mx-auto mb-6">
+                Your feedback helps us design even better essentials for wagging tails everywhere.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                className="px-6 py-2.5 rounded-full bg-[#3D6857] text-white text-xs font-bold hover:bg-[#2D5042] transition-colors"
+              >
+                Submit Another Review
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleFeedbackSubmit} className="space-y-6">
+              
+              {/* Star / Paw Rating */}
+              <div className="flex flex-col items-center justify-center gap-2">
+                <span className="text-xs font-bold text-[#6E675F] uppercase tracking-wider">
+                  Select Paws Rating:
+                </span>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoveredRating(star)}
+                      onMouseLeave={() => setHoveredRating(0)}
+                      className="p-1 cursor-pointer transition-transform hover:scale-125"
+                    >
+                      <Star
+                        size={28}
+                        className={
+                          (hoveredRating || rating) >= star
+                            ? "text-amber-400 fill-amber-400"
+                            : "text-[#D8D0C5]"
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <span className="font-heading text-xs font-bold uppercase tracking-widest text-neutral-400">
-                Community Feedback
-              </span>
+              {/* Feedback Textarea */}
+              <div>
+                <textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  placeholder="Tell us about the fit, fabric, your pet's breed, and how much they loved it..."
+                  rows={4}
+                  className="w-full rounded-2xl bg-[#FAF8F5] border border-[#EAE4DC] p-4 text-sm text-[#231F1D] placeholder-[#8E867E] focus:outline-none focus:border-[#3D6857] focus:ring-2 focus:ring-[#3D6857]/20 transition-all resize-none"
+                />
+              </div>
 
-              <h3 className="font-heading font-black text-2xl sm:text-3xl text-neutral-900 mt-2 mb-4 uppercase">
-                Tell Us What You <span className="text-[#FF462D]">Think</span>
-              </h3>
-
-              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed mb-6">
-                Whether it's the weight of the collar, sleeve length, or a new colorway you want to see in Drop 02, we read every note.
-              </p>
-
-              {!submitted ? (
-                <form onSubmit={handleFeedbackSubmit} className="space-y-4">
-                  {/* Rating Stars */}
-                  <div>
-                    <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-2">
-                      Rate The Experience:
-                    </label>
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoveredRating(star)}
-                          onMouseLeave={() => setHoveredRating(0)}
-                          className="p-1 cursor-pointer transition-transform hover:scale-110"
-                        >
-                          <Star
-                            size={22}
-                            className={`${
-                              star <= (hoveredRating || rating)
-                                ? "text-[#FF462D] fill-[#FF462D]"
-                                : "text-neutral-200"
-                            } transition-colors`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Feedback Textarea */}
-                  <div>
-                    <textarea
-                      rows={4}
-                      value={feedback}
-                      onChange={(e) => setFeedback(e.target.value)}
-                      placeholder={
-                        userData
-                          ? "Write your honest feedback on fabric, fit, or the brand..."
-                          : "Please sign in to write your feedback..."
-                      }
-                      className="w-full p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-900 focus:bg-white transition-all resize-none"
-                    />
-                  </div>
-
-                  {errorMessage && (
-                    <p className="text-xs text-red-500 font-semibold">{errorMessage}</p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={sending}
-                    className="w-full py-4 rounded-full bg-[#0D0D11] hover:bg-[#FF462D] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {sending ? (
-                      <span>Submitting...</span>
-                    ) : (
-                      <>
-                        <span>Submit Feedback</span>
-                        <Send size={14} />
-                      </>
-                    )}
-                  </button>
-                </form>
-              ) : (
-                <div className="p-6 rounded-2xl bg-[#00A878]/10 border border-[#00A878]/20 flex items-center gap-3 text-[#00A878]">
-                  <CheckCircle2 size={24} className="shrink-0" />
-                  <div>
-                    <h4 className="font-heading font-bold text-sm">Feedback Received!</h4>
-                    <p className="text-xs text-neutral-600 mt-0.5">
-                      Thank you for contributing to the future of FurEver.
-                    </p>
-                  </div>
+              {errorMessage && (
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium text-center">
+                  {errorMessage}
                 </div>
               )}
-            </div>
-          </motion.div>
 
-          {/* RIGHT: RESCUE MISSION SHOWCASE */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="lg:col-span-6 bg-[#0D0D11] text-white rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl flex flex-col justify-between relative overflow-hidden"
-          >
-            {/* Ambient Background Glow */}
-            <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#FF462D]/15 blur-3xl pointer-events-none" />
-
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#FF462D] mb-6">
-                <Heart size={22} fill="currentColor" />
-              </div>
-
-              <span className="font-heading text-xs font-bold uppercase tracking-widest text-[#FF462D]">
-                Mission & Animal Welfare
-              </span>
-
-              <h3 className="font-heading font-black text-2xl sm:text-3xl text-white mt-2 mb-4 uppercase">
-                WEAR GOOD. <span className="text-[#FF462D]">DO GOOD.</span>
-              </h3>
-
-              <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-8">
-                In India, over 60 million stray dogs fight hunger and traffic injuries every day. We created FurEver to bridge the gap between elevated streetwear and tangible compassion.
-              </p>
-
-              {/* Impact Metrics Box */}
-              <div className="p-6 rounded-2xl bg-white/[0.04] border border-white/10 space-y-4 mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#FF462D]/20 flex items-center justify-center text-[#FF462D] shrink-0">
-                    <PawPrint size={18} />
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-sm text-white">
-                      10% Direct Donation
-                    </h4>
-                    <p className="text-xs text-neutral-400">
-                      Verified quarterly disbursements to verified local shelter funds.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 pt-3 border-t border-white/5">
-                  <div className="w-10 h-10 rounded-xl bg-[#00E599]/20 flex items-center justify-center text-[#00E599] shrink-0">
-                    <ShieldCheck size={18} />
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-sm text-white">
-                      100% Cruelty-Free Supply Chain
-                    </h4>
-                    <p className="text-xs text-neutral-400">
-                      Zero animal byproducts, certified vegan dyes, and ethical worker wages.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons: Mission & Drops */}
-              <div className="flex flex-col sm:flex-row gap-3">
+              {/* Submit CTA */}
+              <div className="flex justify-center">
                 <button
-                  onClick={() => navigate("/about")}
-                  className="flex-1 py-4 rounded-full bg-[#FF462D] hover:bg-[#E03B24] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-[#FF462D]/20 flex items-center justify-center gap-2 cursor-pointer"
+                  type="submit"
+                  disabled={sending}
+                  className="pill-button px-8 py-3.5 rounded-full bg-[#3D6857] hover:bg-[#2D5042] text-white font-bold text-sm transition-all shadow-md shadow-[#3D6857]/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  <span>Read The Full Mission</span>
-                  <ArrowRight size={14} />
-                </button>
-
-                <button
-                  onClick={() => navigate("/collections")}
-                  className="py-4 px-6 rounded-full bg-white/5 hover:bg-white/10 text-white font-heading text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-center cursor-pointer"
-                >
-                  Support With A Drop
+                  {sending ? (
+                    <span>Submitting Review...</span>
+                  ) : (
+                    <>
+                      <span>Submit Pet Review 🐾</span>
+                      <Send size={15} />
+                    </>
+                  )}
                 </button>
               </div>
-            </div>
-          </motion.div>
+
+              {!userData && (
+                <p className="text-center text-xs text-[#8E867E]">
+                  You will be prompted to sign in so your pet's review is verified.
+                </p>
+              )}
+            </form>
+          )}
 
         </div>
-
       </div>
     </section>
   );

@@ -7,45 +7,38 @@ import Card from "./Card";
 
 export default function BestSeller() {
   const navigate = useNavigate();
-  const { products = [], upcomingDrops = [], loading } = useContext(shopDataContext) || {};
+  const { products = [], loading } = useContext(shopDataContext) || {};
 
   if (loading) {
     return (
-      <div className="py-16 text-center text-neutral-500 font-medium text-sm">
+      <div className="py-16 text-center text-[#6E6E73] font-medium text-xs font-heading uppercase">
         Loading Bestsellers...
       </div>
     );
   }
 
-  // Filter bestseller products; if only 1 or 2 exist, include top products or popular drop preview
-  let bestSellerProducts = products.filter((p) => p.bestseller);
+  // Filter bestsellers or top drops
+  let bestSellerProducts = products.filter((p) => p.bestseller || p.badge === "Bestseller");
   if (bestSellerProducts.length === 0) {
-    bestSellerProducts = products.slice(0, 2);
-  }
-
-  // Combine with a teaser to ensure a balanced 3 or 4 item grid
-  const displayItems = [...bestSellerProducts, ...upcomingDrops.filter((u) => u.bestseller)].slice(0, 4);
-
-  if (displayItems.length === 0) {
-    return (
-      <div className="text-center py-10 text-neutral-400 font-medium">
-        Bestsellers dropping soon.
-      </div>
-    );
+    bestSellerProducts = products.slice(0, 4);
+  } else if (bestSellerProducts.length < 4) {
+    products.forEach((p) => {
+      if (bestSellerProducts.length < 4 && !bestSellerProducts.some((b) => b.id === p.id || b._id === p._id)) {
+        bestSellerProducts.push(p);
+      }
+    });
   }
 
   return (
     <section className="w-full">
-      {/* Responsive Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 lg:gap-8">
-        {displayItems.map((product) => (
-          <Card key={product._id} product={product} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {bestSellerProducts.slice(0, 4).map((product) => (
+          <Card key={product._id || product.id} product={product} />
         ))}
       </div>
 
-      {/* CTA Button */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
@@ -57,9 +50,9 @@ export default function BestSeller() {
               state: { filter: "bestseller" },
             })
           }
-          className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FF462D] hover:bg-[#E03B24] active:scale-[0.98] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-[#FF462D]/20 flex items-center justify-center gap-2 cursor-pointer"
+          className="pill-button px-8 py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] active:scale-[0.98] text-white font-heading text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>Shop High-Demand Drops</span>
+          <span>Shop High-Rotation Pieces</span>
           <ArrowRight size={15} />
         </button>
       </motion.div>

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Star, ShoppingBag, Eye, Bell, Check, Sparkles, Flame, ShieldAlert } from "lucide-react";
+import { Star, ShoppingBag, Eye, Check, Sparkles, Flame, ShieldAlert, ArrowRight } from "lucide-react";
 import { shopDataContext } from "../context/ShopContext";
 import { userDataContext } from "../context/UserContext";
 
@@ -13,29 +13,36 @@ export default function Card({ product }) {
   const { userData } = useContext(userDataContext) || {};
 
   const [isHovered, setIsHovered] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("black");
   const [selectedSize, setSelectedSize] = useState("");
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [loginAlert, setLoginAlert] = useState(false);
-  const [notified, setNotified] = useState(false);
 
-  const isUpcoming = Boolean(product.isUpcoming);
+  const isCustom = product.category === "Customs" || product.customizable;
   const rating = product.rating || 4.9;
-  const reviewCount = product.reviewCount || 38;
+  const reviewCount = product.reviewCount || 36;
   const sizes = product.sizes && product.sizes.length ? product.sizes : ["S", "M", "L", "XL", "XXL"];
 
+  // Image selection based on active color
+  const displayImage =
+    selectedColor === "white" && (product.images?.white || product.image2)
+      ? product.images?.white || product.image2
+      : product.images?.black || product.image1 || product.image?.[0];
+
+  const secondaryImage =
+    selectedColor === "black" && (product.images?.white || product.image2)
+      ? product.images?.white || product.image2
+      : null;
+
   const handleCardClick = () => {
-    if (isUpcoming) {
-      handleNotifyClick();
-      return;
-    }
-    navigate(`/product/${product._id}`);
+    navigate(`/product/${product._id || product.id}`);
   };
 
   const handleQuickAdd = async (e, size) => {
     e.stopPropagation();
 
-    // Check auth first! (Fixes issue #9 from furever problems)
+    // Check auth guard
     if (!userData) {
       setLoginAlert(true);
       setTimeout(() => {
@@ -48,7 +55,7 @@ export default function Card({ product }) {
     try {
       setIsAdding(true);
       setSelectedSize(size);
-      const success = await addToCart(product._id, size, 1);
+      const success = await addToCart(product._id || product.id, size, 1);
       if (success) {
         if (typeof setIsCartDrawerOpen === "function") {
           setIsCartDrawerOpen(true);
@@ -62,12 +69,6 @@ export default function Card({ product }) {
     }
   };
 
-  const handleNotifyClick = (e) => {
-    if (e) e.stopPropagation();
-    setNotified(true);
-    setTimeout(() => setNotified(false), 3000);
-  };
-
   return (
     <div
       onClick={handleCardClick}
@@ -76,79 +77,78 @@ export default function Card({ product }) {
         setIsHovered(false);
         setShowQuickAdd(false);
       }}
-      className="group relative flex flex-col w-full bg-white rounded-3xl border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 hover:shadow-2xl overflow-hidden cursor-pointer"
+      className="group relative flex flex-col w-full bg-white rounded-3xl border border-[#EDE4DD] hover:border-[#DC8E90] transition-all duration-300 hover:shadow-xl overflow-hidden cursor-pointer street-card"
     >
       {/* ================= IMAGE STAGE ================= */}
-      <div className="relative w-full aspect-[4/5] bg-[#F2ECE4] overflow-hidden">
+      <div className="relative w-full aspect-[4/5] bg-[#F8F3EE] overflow-hidden flex items-center justify-center">
         
-        {/* Primary Image */}
+        {/* Main Image with Smooth Subtle Scale */}
         <img
-          src={product.image1}
+          src={displayImage}
           alt={product.name}
-          className={`w-full h-full object-cover transition-all duration-700 ease-out ${
-            isHovered && product.image2 ? "opacity-0 scale-105" : "opacity-100 scale-100"
+          className={`w-full h-full object-contain p-2 transition-all duration-500 ease-out ${
+            isHovered && secondaryImage ? "opacity-0 scale-105" : "opacity-100 scale-100"
           }`}
           loading="lazy"
         />
 
-        {/* Secondary Image on Hover */}
-        {product.image2 && (
+        {/* Hover Alternate Image */}
+        {secondaryImage && (
           <img
-            src={product.image2}
-            alt={`${product.name} alternate view`}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
+            src={secondaryImage}
+            alt={`${product.name} alternate`}
+            className={`absolute inset-0 w-full h-full object-contain p-2 transition-all duration-500 ease-out ${
               isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
             }`}
             loading="lazy"
           />
         )}
 
-        {/* Streetwear Badges */}
+        {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
-          {product.bestseller && (
-            <span className="badge-streetwear bg-[#0D0D11]/90 text-white border border-white/10 shadow-sm flex items-center gap-1">
-              <Flame size={11} className="text-[#FF462D]" fill="currentColor" />
-              Bestseller
+          {product.badge && (
+            <span
+              className={`badge-street ${
+                product.badge.includes("10%") || product.badge.includes("NGO")
+                  ? "bg-[#DC8E90] text-white shadow-xs"
+                  : "bg-[#58545F] text-white shadow-xs"
+              }`}
+            >
+              {product.badge === "Bestseller" && <Flame size={11} fill="currentColor" />}
+              {product.badge}
             </span>
           )}
-
-          {isUpcoming ? (
-            <span className="badge-streetwear bg-[#FF462D] text-white shadow-md">
-              {product.dropBadge || "DROP 02 • SOON"}
-            </span>
-          ) : (
-            <span className="badge-streetwear bg-white/95 text-neutral-900 border border-neutral-200/80 shadow-sm">
-              240 GSM • Oversized
-            </span>
-          )}
+          <span className="badge-street bg-white/95 text-[#58545F] border border-[#EDE4DD] shadow-2xs">
+            {product.specs?.gsm || 240} GSM • BOXY FIT
+          </span>
         </div>
 
-        {/* Quick View / Notification Trigger */}
+        {/* Quick View Icon */}
         <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md shadow-md flex items-center justify-center text-neutral-800 hover:text-[#FF462D] transition-colors">
-            <Eye size={15} />
+          <div className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-[#58545F] hover:bg-[#DC8E90] hover:text-white transition-colors">
+            <Eye size={14} />
           </div>
         </div>
 
         {/* Quick Add Size Bar (Slide Up on Hover) */}
-        {!isUpcoming && (
+        {!isCustom && (
           <div
             className={`absolute inset-x-3 bottom-3 z-20 transition-all duration-300 ${
-              isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
+              isHovered ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0 pointer-events-none"
             }`}
           >
             {showQuickAdd ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-[#121217]/95 backdrop-blur-xl border border-white/20 p-2.5 rounded-2xl shadow-xl flex flex-col gap-1.5 text-white"
+                className="bg-[#58545F] text-white p-2.5 rounded-2xl shadow-xl flex flex-col gap-1.5"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center justify-between text-[11px] font-bold text-neutral-300 px-1">
+                <div className="flex items-center justify-between text-[10px] font-bold text-neutral-200 px-1">
                   <span>SELECT SIZE:</span>
                   <button
                     onClick={() => setShowQuickAdd(false)}
-                    className="text-neutral-400 hover:text-white"
+                    className="text-neutral-300 hover:text-white cursor-pointer"
                   >
                     ✕
                   </button>
@@ -158,7 +158,7 @@ export default function Card({ product }) {
                     <button
                       key={sz}
                       onClick={(e) => handleQuickAdd(e, sz)}
-                      className="flex-1 py-1.5 rounded-lg bg-white/10 hover:bg-[#FF462D] text-white text-xs font-black transition-colors"
+                      className="flex-1 py-1.5 rounded-lg bg-white/20 hover:bg-[#DC8E90] text-white text-xs font-black transition-colors cursor-pointer"
                     >
                       {sz}
                     </button>
@@ -171,7 +171,7 @@ export default function Card({ product }) {
                   e.stopPropagation();
                   setShowQuickAdd(true);
                 }}
-                className="w-full py-3 rounded-2xl bg-[#0D0D11]/90 hover:bg-[#FF462D] text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="pill-button w-full py-2.5 rounded-full bg-[#58545F] hover:bg-[#DC8E90] text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
                 <ShoppingBag size={14} />
                 <span>+ Quick Add</span>
@@ -180,49 +180,39 @@ export default function Card({ product }) {
           </div>
         )}
 
-        {/* Teaser Drop Action Bar */}
-        {isUpcoming && (
+        {/* Custom Pet Tee Action Bar */}
+        {isCustom && (
           <div
             className={`absolute inset-x-3 bottom-3 z-20 transition-all duration-300 ${
-              isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
+              isHovered ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0 pointer-events-none"
             }`}
           >
             <button
-              onClick={handleNotifyClick}
-              className={`w-full py-3 rounded-2xl text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                notified
-                  ? "bg-[#00E599] text-black font-extrabold"
-                  : "bg-[#0D0D11]/90 hover:bg-[#FF462D] text-white"
-              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCardClick();
+              }}
+              className="pill-button w-full py-2.5 rounded-full bg-[#58545F] hover:bg-[#DC8E90] text-white text-xs font-bold uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              {notified ? (
-                <>
-                  <Check size={14} />
-                  <span>On The VIP List!</span>
-                </>
-              ) : (
-                <>
-                  <Bell size={14} />
-                  <span>Notify When Live</span>
-                </>
-              )}
+              <span>Customize Pet Art</span>
+              <ArrowRight size={13} />
             </button>
           </div>
         )}
 
-        {/* Login Prompt Overlay (for issue #9) */}
+        {/* Auth Guard Alert */}
         <AnimatePresence>
           {loginAlert && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-4 z-30 bg-black/90 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white"
+              className="absolute inset-4 z-30 bg-[#2B2730]/95 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white"
             >
-              <ShieldAlert size={26} className="text-[#FF462D] mb-2" />
-              <p className="font-heading font-bold text-sm">Please Sign In First</p>
-              <p className="text-[11px] text-neutral-400 mt-1">
-                Redirecting to account login...
+              <ShieldAlert size={24} className="text-[#DC8E90] mb-2" />
+              <p className="font-heading font-bold text-xs uppercase tracking-wider">Please Login First</p>
+              <p className="text-[11px] text-neutral-300 mt-1">
+                Taking you to sign in...
               </p>
             </motion.div>
           )}
@@ -232,46 +222,58 @@ export default function Card({ product }) {
       {/* ================= CONTENT STAGE ================= */}
       <div className="p-5 flex flex-col justify-between flex-1 bg-white">
         <div>
-          {/* Category & Rating */}
-          <div className="flex items-center justify-between gap-2 mb-1.5 text-xs text-neutral-500">
-            <span className="font-semibold uppercase tracking-wider text-[10px]">
-              {product.category || "Unisex"} • {product.subCategory || "Oversized"}
+          {/* Top Line: Category & Color Switcher */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7E7785]">
+              {product.drop || "Drop 001"} • {product.category}
             </span>
 
-            <div className="flex items-center gap-1 font-bold text-neutral-800 text-xs">
-              <Star size={12} className="text-[#FF462D] fill-[#FF462D]" />
-              <span>{rating.toFixed(1)}</span>
-              <span className="text-neutral-400 font-normal">({reviewCount})</span>
+            {/* Color Switcher Dots */}
+            <div
+              className="flex items-center gap-1.5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedColor("black")}
+                className={`w-4 h-4 rounded-full bg-[#111111] border transition-transform ${
+                  selectedColor === "black" ? "ring-2 ring-[#DC8E90] scale-110" : "border-neutral-300"
+                }`}
+                title="Vintage Black"
+              />
+              <button
+                type="button"
+                onClick={() => setSelectedColor("white")}
+                className={`w-4 h-4 rounded-full bg-[#F5F5F3] border transition-transform ${
+                  selectedColor === "white" ? "ring-2 ring-[#DC8E90] scale-110" : "border-neutral-300"
+                }`}
+                title="Cloud White"
+              />
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="font-heading text-base sm:text-lg font-bold text-neutral-900 line-clamp-1 group-hover:text-[#FF462D] transition-colors">
+          <h3 className="font-heading font-black text-sm sm:text-base text-[#2B2730] uppercase tracking-tight line-clamp-1 group-hover:text-[#DC8E90] transition-colors">
             {product.name}
           </h3>
         </div>
 
-        {/* Price & Status */}
-        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
+        {/* Price & Rating */}
+        <div className="mt-4 pt-3 border-t border-[#EDE4DD] flex items-center justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="font-heading text-lg sm:text-xl font-extrabold text-neutral-900">
+            <span className="font-heading font-black text-base sm:text-lg text-[#2B2730]">
               {currency}{product.price}
             </span>
-            <span className="text-xs text-neutral-400 line-through">
-              {currency}{Math.round(product.price * 1.35)}
+            <span className="text-xs text-[#7E7785] line-through">
+              {currency}{product.originalPrice || 899}
             </span>
           </div>
 
-          {isUpcoming ? (
-            <span className="text-[11px] font-bold text-[#FF462D] uppercase tracking-wider">
-              Drop 02 Preview
-            </span>
-          ) : (
-            <span className="text-[11px] font-semibold text-[#00A878] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00A878] animate-pulse" />
-              In Stock
-            </span>
-          )}
+          <div className="flex items-center gap-1 text-[11px] font-bold text-[#58545F]">
+            <Star size={12} className="text-amber-500 fill-amber-500" />
+            <span>{rating.toFixed(1)}</span>
+            <span className="text-[#7E7785] font-normal">({reviewCount})</span>
+          </div>
         </div>
       </div>
     </div>

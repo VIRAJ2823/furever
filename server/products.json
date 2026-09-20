@@ -1,0 +1,125 @@
+[
+  {
+    "id": "fur-001",
+    "name": "Just Vibin' Brontosaurus Oversized Tee",
+    "category": "Unisex",
+    "drop": "Drop 001",
+    "price": 499,
+    "originalPrice": 899,
+    "badge": "Bestseller",
+    "description": "240 GSM Heavyweight French Terry cotton. Relaxed streetwear drape featuring our chill dino graphic.",
+    "colors": [
+      { "name": "Vintage Black", "hex": "#111111", "inStock": true },
+      { "name": "Cloud White", "hex": "#F5F5F3", "inStock": true }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": {
+      "black": "/images/products/vibin-black.png",
+      "white": "/images/products/vibin-white.png"
+    },
+    "specs": {
+      "gsm": 240,
+      "fit": "Heavyweight Oversized Fit",
+      "fabric": "100% Combed Cotton",
+      "care": "Cold machine wash inside out, do not iron on print"
+    }
+  },
+  {
+    "id": "fur-002",
+    "name": "I Go Jim Dino Oversized Tee",
+    "category": "Men",
+    "drop": "Drop 001",
+    "price": 499,
+    "originalPrice": 899,
+    "badge": "Trending",
+    "description": "240 GSM Heavyweight French Terry. The gym-bro mini dino tee built for pump covers and street fits.",
+    "colors": [
+      { "name": "Vintage Black", "hex": "#111111", "inStock": true },
+      { "name": "Cloud White", "hex": "#F5F5F3", "inStock": true }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": {
+      "black": "/images/products/igojim-black.png",
+      "white": "/images/products/igojim-white.png"
+    },
+    "specs": {
+      "gsm": 240,
+      "fit": "Heavyweight Oversized Fit",
+      "fabric": "100% Combed Cotton"
+    }
+  },
+  {
+    "id": "fur-003",
+    "name": "Do Not Disturb Lazy Panda Tee",
+    "category": "Unisex",
+    "drop": "Drop 001",
+    "price": 499,
+    "originalPrice": 899,
+    "badge": "Essential",
+    "description": "240 GSM breathable cotton with our sleeping panda graphic print. Slouchy dropped shoulders.",
+    "colors": [
+      { "name": "Vintage Black", "hex": "#111111", "inStock": true },
+      { "name": "Cloud White", "hex": "#F5F5F3", "inStock": true }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": {
+      "black": "/images/products/panda-black.png",
+      "white": "/images/products/panda-white.png"
+    },
+    "specs": {
+      "gsm": 240,
+      "fit": "Heavyweight Oversized Fit",
+      "fabric": "100% Combed Cotton"
+    }
+  },
+  {
+    "id": "fur-custom-01",
+    "name": "Custom Pet Line Art Oversized Tee",
+    "category": "Customs",
+    "drop": "Memory Series",
+    "price": 429,
+    "originalPrice": 799,
+    "badge": "10% to Animal Welfare",
+    "description": "Upload a photo of your pet. We hand-draw a custom minimalist line-art portrait printed on 240 GSM heavyweight cotton.",
+    "customizable": true,
+    "styleVariant": "Minimalist Line Art",
+    "colors": [
+      { "name": "Vintage Black", "hex": "#111111", "inStock": true },
+      { "name": "Cloud White", "hex": "#F5F5F3", "inStock": true }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": {
+      "black": "/images/customs/lineart-black.png",
+      "white": "/images/customs/lineart-white.png"
+    },
+    "specs": {
+      "gsm": 240,
+      "customNote": "Art proof shared via WhatsApp/Email within 24 hours."
+    }
+  },
+  {
+    "id": "fur-custom-02",
+    "name": "Custom Pet Stencil Art Oversized Tee",
+    "category": "Customs",
+    "drop": "Memory Series",
+    "price": 429,
+    "originalPrice": 799,
+    "badge": "10% to Animal Welfare",
+    "description": "High-contrast monochrome stencil portrait of your pet. 240 GSM heavyweight streetwear fit.",
+    "customizable": true,
+    "styleVariant": "Graphic Stencil Art",
+    "colors": [
+      { "name": "Vintage Black", "hex": "#111111", "inStock": true },
+      { "name": "Cloud White", "hex": "#F5F5F3", "inStock": true }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": {
+      "black": "/images/customs/stencil-black.png",
+      "white": "/images/customs/stencil-white.png"
+    },
+    "specs": {
+      "gsm": 240,
+      "customNote": "Art proof shared via WhatsApp/Email within 24 hours."
+    }
+  }
+]

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Flame } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import googleLogo from "../assets/google.png";
@@ -13,8 +13,8 @@ import { auth, provider } from "../utils/Firebase.js";
 const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 export default function Registration() {
-  const { serverUrl } = useContext(authDataContext);
-  const { getCurrentUser } = useContext(userDataContext);
+  const { serverUrl } = useContext(authDataContext) || {};
+  const { getCurrentUser } = useContext(userDataContext) || {};
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -50,7 +50,9 @@ export default function Registration() {
         { name: form.name, email: form.email, password: form.password },
         { withCredentials: true }
       );
-      await getCurrentUser();
+      if (typeof getCurrentUser === "function") {
+        await getCurrentUser();
+      }
       setStatus("success");
       setTimeout(() => {
         navigate("/");
@@ -66,7 +68,7 @@ export default function Registration() {
 
   const handleGoogleSignup = async () => {
     if (!auth || !provider) {
-      setServerError("Google Sign-In requires VITE_FIREBASE_API_KEY in client/.env. Please use email & password.");
+      setServerError("Google Sign-In requires Firebase configuration. Please use email & password.");
       return;
     }
     try {
@@ -81,167 +83,149 @@ export default function Registration() {
         { name, email },
         { withCredentials: true }
       );
-      await getCurrentUser();
+
+      if (typeof getCurrentUser === "function") {
+        await getCurrentUser();
+      }
       setStatus("success");
       setTimeout(() => {
         navigate("/");
       }, 800);
     } catch (error) {
-      console.error(error);
+      console.error("Google Signup Error:", error);
+      setServerError(error?.response?.data?.message || "Google registration failed.");
       setStatus("idle");
-      setServerError(error?.response?.data?.message || error.message || "Google Sign In Failed");
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0D0D11] text-white flex flex-col justify-between relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-[-20%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-[#FF462D]/12 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-[#FF462D]/08 blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-[#FAF6F2] text-[#2B2730] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      {/* Decorative Blur */}
+      <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-[#DC8E90]/15 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-[#58545F]/10 blur-3xl pointer-events-none" />
 
-      {/* Top Bar */}
-      <div className="flex items-center justify-between px-6 sm:px-12 py-6 z-10">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center p-1.5">
-            <img src={paws} alt="FurEver" className="w-full h-full object-contain" />
-          </div>
-          <span className="font-heading font-black text-xl tracking-tight uppercase">
-            FUR<span className="text-[#FF462D]">EVER</span>
-          </span>
-        </Link>
-
-        <Link
-          to="/login"
-          className="text-xs font-heading font-bold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
-        >
-          Sign In Instead <span className="text-[#FF462D]">→</span>
-        </Link>
-      </div>
-
-      {/* Center Card */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-[#14141A] border border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl relative"
-        >
-          <div className="mb-8 text-center">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-[#FF462D] mb-3">
-              <Flame size={12} fill="currentColor" />
-              Join The Pack
+      {/* Card Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md bg-white rounded-3xl border border-[#EDE4DD] shadow-xl p-8 sm:p-10 relative z-10"
+      >
+        {/* Brand Header */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#58545F] flex items-center justify-center p-2 shadow-xs">
+              <img src={paws} alt="Furever" className="w-full h-full object-contain" />
+            </div>
+            <span className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
+              FUR<span className="text-[#DC8E90]">EVER</span>
             </span>
-            <h1 className="font-heading font-black text-3xl uppercase tracking-tight text-white mb-2">
-              CREATE ACCOUNT
-            </h1>
-            <p className="text-xs text-neutral-400">
-              Get VIP early drop access and seamless order tracking.
-            </p>
-          </div>
-
-          {/* Google Signup */}
-          <button
-            onClick={handleGoogleSignup}
-            disabled={status === "loading"}
-            className="w-full py-3.5 px-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 mb-6"
-          >
-            <img src={googleLogo} alt="Google" className="w-4 h-4 object-contain" />
-            <span>Sign Up with Google</span>
-          </button>
-
-          <div className="relative flex items-center justify-center mb-6">
-            <div className="w-full border-t border-white/10" />
-            <span className="absolute bg-[#14141A] px-3 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
-              Or With Email
-            </span>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
-                Full Name
-              </label>
-              <div className="relative">
-                <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Your Name"
-                  value={form.name}
-                  onChange={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-neutral-500 text-xs outline-none focus:border-[#FF462D] transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  value={form.email}
-                  onChange={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-neutral-500 text-xs outline-none focus:border-[#FF462D] transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
-                Password (min. 6 chars)
-              </label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  className="w-full pl-11 pr-11 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-neutral-500 text-xs outline-none focus:border-[#FF462D] transition-colors"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-
-            {serverError && (
-              <p className="text-xs text-red-400 font-semibold text-center">{serverError}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="w-full py-4 rounded-full bg-[#FF462D] hover:bg-[#E03B24] active:scale-[0.99] text-white font-heading text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-[#FF462D]/20 cursor-pointer disabled:opacity-50 mt-6"
-            >
-              {status === "loading" ? "Creating Account..." : "Create Account"}
-            </button>
-          </form>
-
-          <p className="text-center text-xs text-neutral-400 mt-6">
-            Already have an account?{" "}
-            <Link to="/login" className="text-[#FF462D] font-bold uppercase hover:underline">
-              Sign In
-            </Link>
+          </Link>
+          <h1 className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
+            Join Furever Streetwear 🐾
+          </h1>
+          <p className="text-xs text-[#58545F] mt-1 font-medium">
+            Create an account to unlock 15% off Drop 001 and save your custom pet artwork proofs.
           </p>
-        </motion.div>
-      </div>
+        </div>
 
-      <div className="py-6 text-center text-xs text-neutral-600">
-        © {new Date().getFullYear()} FurEver Studio. Purpose-driven apparel.
-      </div>
+        {/* Google Signup Button */}
+        <button
+          type="button"
+          onClick={handleGoogleSignup}
+          className="w-full py-3.5 px-4 rounded-full border border-[#EDE4DD] bg-[#FAF6F2] hover:bg-[#F5EFEB] text-[#2B2730] text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-3 cursor-pointer shadow-xs mb-6"
+        >
+          <img src={googleLogo} alt="Google" className="w-4 h-4 object-contain" />
+          <span>Sign up with Google</span>
+        </button>
+
+        <div className="relative flex items-center justify-center mb-6">
+          <div className="border-t border-[#EDE4DD] w-full" />
+          <span className="bg-white px-3 text-[10px] font-black uppercase tracking-wider text-[#7E7785] shrink-0">
+            Or with email
+          </span>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs font-black uppercase tracking-wider text-[#58545F] block mb-1">Your Name</label>
+            <div className="relative flex items-center">
+              <User size={16} className="absolute left-4 text-[#7E7785]" />
+              <input
+                type="text"
+                required
+                value={form.name}
+                onChange={handleChange("name")}
+                onBlur={handleBlur("name")}
+                placeholder="Alex Mercer"
+                className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] text-xs font-bold text-[#2B2730] placeholder-[#7E7785] focus:outline-none focus:border-[#58545F]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-black uppercase tracking-wider text-[#58545F] block mb-1">Email Address</label>
+            <div className="relative flex items-center">
+              <Mail size={16} className="absolute left-4 text-[#7E7785]" />
+              <input
+                type="email"
+                required
+                value={form.email}
+                onChange={handleChange("email")}
+                onBlur={handleBlur("email")}
+                placeholder="creator@example.com"
+                className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] text-xs font-bold text-[#2B2730] placeholder-[#7E7785] focus:outline-none focus:border-[#58545F]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-black uppercase tracking-wider text-[#58545F] block mb-1">Password (min 6 characters)</label>
+            <div className="relative flex items-center">
+              <Lock size={16} className="absolute left-4 text-[#7E7785]" />
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={form.password}
+                onChange={handleChange("password")}
+                onBlur={handleBlur("password")}
+                placeholder="••••••••"
+                className="w-full pl-11 pr-11 py-3.5 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] text-xs font-bold text-[#2B2730] placeholder-[#7E7785] focus:outline-none focus:border-[#58545F]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-[#7E7785] hover:text-[#2B2730] cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {serverError && (
+            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold text-center">
+              {serverError}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
+          >
+            <span>{status === "loading" ? "Creating Account..." : "Create Streetwear Account 🐾"}</span>
+            <ArrowRight size={15} />
+          </button>
+        </form>
+
+        <div className="mt-8 text-center text-xs text-[#58545F] font-medium">
+          Already have an account?{" "}
+          <Link to="/login" className="text-[#DC8E90] font-black uppercase tracking-wider hover:underline">
+            Sign in
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 }
