@@ -31,11 +31,62 @@ function ShopContext({ children }) {
   const [cartLoading, setCartLoading] =
     useState(false);
 
-  // ---------------- STORE SETTINGS ----------------
-
   const currency = "₹";
 
   const deliveryFee = 50;
+
+  // ---------------- SEARCH & DRAWER ----------------
+  const [search, setSearch] = useState("");
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
+  // ---------------- UPCOMING DROPS (TEASERS) ----------------
+  const upcomingDrops = [
+    {
+      _id: "upcoming-01",
+      name: "Shadow Stalker 260 GSM Tee",
+      category: "Men",
+      subCategory: "Topwear",
+      price: 1299,
+      image1: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop",
+      image2: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      bestseller: false,
+      isUpcoming: true,
+      dropBadge: "DROP 02 • SOON",
+      dropDate: "Drops Next Week",
+      description: "260 GSM Heavyweight French Terry in Obsidian Black with high-density silicone puff prints. Limited to 200 pieces."
+    },
+    {
+      _id: "upcoming-02",
+      name: "Cyber Stray Boxy Zip Hoodie",
+      category: "Men",
+      subCategory: "Winterwear",
+      price: 2499,
+      image1: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=800&auto=format&fit=crop",
+      image2: "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?q=80&w=800&auto=format&fit=crop",
+      sizes: ["M", "L", "XL", "XXL"],
+      bestseller: true,
+      isUpcoming: true,
+      dropBadge: "DROP 02 • SOON",
+      dropDate: "Drops Next Week",
+      description: "380 GSM ultra-heavyweight cotton fleece. Custom double-ended metal zipper with relaxed drop-shoulder silhouette."
+    },
+    {
+      _id: "upcoming-03",
+      name: "Rebel Pack Acid-Wash Tee",
+      category: "Women",
+      subCategory: "Topwear",
+      price: 1199,
+      image1: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?q=80&w=800&auto=format&fit=crop",
+      image2: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?q=80&w=800&auto=format&fit=crop",
+      sizes: ["S", "M", "L", "XL"],
+      bestseller: false,
+      isUpcoming: true,
+      dropBadge: "DROP 02 • SOON",
+      dropDate: "Drops Next Week",
+      description: "Hand-treated mineral wash 240 GSM single jersey with vintage distressed collar and raw-cut edge aesthetics."
+    }
+  ];
 
   // ==================================================
   // GET PRODUCTS
@@ -447,6 +498,17 @@ function ShopContext({ children }) {
     getCartCount,
 
     getCartAmount,
+
+    // Search & Drawer
+    search,
+
+    setSearch,
+
+    isCartDrawerOpen,
+
+    setIsCartDrawerOpen,
+
+    upcomingDrops,
   };
 
   return (

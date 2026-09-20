@@ -1,1253 +1,279 @@
-import React, {
-  useContext,
-  useState,
-} from "react";
-
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
-
-import {
-  useNavigate,
-} from "react-router-dom";
-
-import {
-  FaShoppingCart,
-  FaStar,
-  FaTimes,
-} from "react-icons/fa";
-
-import {
-  shopDataContext,
-} from "../context/ShopContext";
-
-
-function Card({ product }) {
-
-  const navigate =
-    useNavigate();
-
-
-  const {
-
-    currency,
-
-    addToCart,
-
-  } = useContext(
-    shopDataContext
-  );
-
-
-  // ==========================================
-  // SIZE POPUP STATE
-  // ==========================================
-
-  const [
-
-    showSizePopup,
-
-    setShowSizePopup,
-
-  ] = useState(
-    false
-  );
-
-
-  // ==========================================
-  // SELECTED SIZE
-  // ==========================================
-
-  const [
-
-    selectedSize,
-
-    setSelectedSize,
-
-  ] = useState(
-    ""
-  );
-
-
-  // ==========================================
-  // ERROR MESSAGE
-  // ==========================================
-
-  const [
-
-    sizeError,
-
-    setSizeError,
-
-  ] = useState(
-    ""
-  );
-
-
-  // ==========================================
-  // PRODUCT RATING
-  // ==========================================
-
-  const rating =
-    product.rating || 0;
-
-
-  const reviewCount =
-    product.reviewCount || 0;
-
-
-  // ==========================================
-  // OPEN SIZE POPUP
-  // ==========================================
-
-  const handleAddToCart = (
-    event
-  ) => {
-
-    event.stopPropagation();
-
-
-    setSelectedSize(
-      ""
-    );
-
-
-    setSizeError(
-      ""
-    );
-
-
-    setShowSizePopup(
-      true
-    );
-
-  };
-
-
-  // ==========================================
-  // SELECT SIZE
-  // ==========================================
-
-  const handleSizeSelect = (
-    event,
-    size
-  ) => {
-
-    event.stopPropagation();
-
-
-    setSelectedSize(
-      size
-    );
-
-
-    setSizeError(
-      ""
-    );
-
-  };
-
-
-  // ==========================================
-  // FINAL ADD TO CART
-  // ==========================================
-
-  const handleConfirmAddToCart = (
-    event
-  ) => {
-
-    event.stopPropagation();
-
-
-    if (
-      !selectedSize
-    ) {
-
-      setSizeError(
-
-        "Please select a size before adding the product."
-
-      );
-
-
+import React, { useContext, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Star, ShoppingBag, Eye, Bell, Check, Sparkles, Flame, ShieldAlert } from "lucide-react";
+import { shopDataContext } from "../context/ShopContext";
+import { userDataContext } from "../context/UserContext";
+
+export default function Card({ product }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { currency = "₹", addToCart, setIsCartDrawerOpen } = useContext(shopDataContext) || {};
+  const { userData } = useContext(userDataContext) || {};
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [loginAlert, setLoginAlert] = useState(false);
+  const [notified, setNotified] = useState(false);
+
+  const isUpcoming = Boolean(product.isUpcoming);
+  const rating = product.rating || 4.9;
+  const reviewCount = product.reviewCount || 38;
+  const sizes = product.sizes && product.sizes.length ? product.sizes : ["S", "M", "L", "XL", "XXL"];
+
+  const handleCardClick = () => {
+    if (isUpcoming) {
+      handleNotifyClick();
       return;
+    }
+    navigate(`/product/${product._id}`);
+  };
 
+  const handleQuickAdd = async (e, size) => {
+    e.stopPropagation();
+
+    // Check auth first! (Fixes issue #9 from furever problems)
+    if (!userData) {
+      setLoginAlert(true);
+      setTimeout(() => {
+        setLoginAlert(false);
+        navigate("/login", { state: { from: location.pathname } });
+      }, 1200);
+      return;
     }
 
-
-    addToCart(
-
-      product._id,
-
-      selectedSize,
-
-      1
-
-    );
-
-
-    setShowSizePopup(
-      false
-    );
-
-
-    setSelectedSize(
-      ""
-    );
-
-
-    setSizeError(
-      ""
-    );
-
+    try {
+      setIsAdding(true);
+      setSelectedSize(size);
+      const success = await addToCart(product._id, size, 1);
+      if (success) {
+        if (typeof setIsCartDrawerOpen === "function") {
+          setIsCartDrawerOpen(true);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsAdding(false);
+      setShowQuickAdd(false);
+    }
   };
 
-
-  // ==========================================
-  // CLOSE POPUP
-  // ==========================================
-
-  const handleClosePopup = (
-    event
-  ) => {
-
-    event.stopPropagation();
-
-
-    setShowSizePopup(
-      false
-    );
-
-
-    setSelectedSize(
-      ""
-    );
-
-
-    setSizeError(
-      ""
-    );
-
+  const handleNotifyClick = (e) => {
+    if (e) e.stopPropagation();
+    setNotified(true);
+    setTimeout(() => setNotified(false), 3000);
   };
-
-
-  // ==========================================
-  // PRODUCT CLICK
-  // ==========================================
-
-  const handleProductClick =
-    () => {
-
-      navigate(
-
-        `/product/${product._id}`
-
-      );
-
-    };
-
 
   return (
+    <div
+      onClick={handleCardClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setShowQuickAdd(false);
+      }}
+      className="group relative flex flex-col w-full bg-white rounded-3xl border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 hover:shadow-2xl overflow-hidden cursor-pointer"
+    >
+      {/* ================= IMAGE STAGE ================= */}
+      <div className="relative w-full aspect-[4/5] bg-[#F2ECE4] overflow-hidden">
+        
+        {/* Primary Image */}
+        <img
+          src={product.image1}
+          alt={product.name}
+          className={`w-full h-full object-cover transition-all duration-700 ease-out ${
+            isHovered && product.image2 ? "opacity-0 scale-105" : "opacity-100 scale-100"
+          }`}
+          loading="lazy"
+        />
 
-    <>
-
-      {/* ====================================== */}
-      {/* PRODUCT CARD */}
-      {/* ====================================== */}
-
-      <motion.div
-
-        whileHover={{
-
-          y: -10,
-
-          scale: 1.02,
-
-        }}
-
-        transition={{
-
-          duration: 0.35,
-
-        }}
-
-        onClick={
-          handleProductClick
-        }
-
-        className="
-
-          group
-
-          w-full
-
-          max-w-[420px]
-
-          cursor-pointer
-
-          overflow-hidden
-
-          rounded-[32px]
-
-          bg-white
-
-          shadow-md
-
-          transition-all
-
-          duration-500
-
-          hover:shadow-2xl
-
-        "
-
-      >
-
-
-        {/* ==================================== */}
-        {/* PRODUCT IMAGE */}
-        {/* ==================================== */}
-
-        <div
-
-          className="
-
-            relative
-
-            overflow-hidden
-
-            bg-[#F8F5EF]
-
-          "
-
-        >
-
-
-          {/* BESTSELLER */}
-
-          {product.bestseller && (
-
-            <div
-
-              className="
-
-                absolute
-
-                left-5
-
-                top-5
-
-                z-20
-
-                rounded-full
-
-                bg-[#FF6A3D]
-
-                px-4
-
-                py-2
-
-                text-xs
-
-                font-semibold
-
-                tracking-wide
-
-                text-white
-
-                shadow-lg
-
-              "
-
-            >
-
-              Bestseller
-
-            </div>
-
-          )}
-
-
-          {/* IMAGE */}
-
+        {/* Secondary Image on Hover */}
+        {product.image2 && (
           <img
-
-            src={
-              product.image1
-            }
-
-            alt={
-              product.name
-            }
-
-            className="
-
-              aspect-square
-
-              w-full
-
-              object-cover
-
-              transition-all
-
-              duration-700
-
-              group-hover:scale-110
-
-              group-hover:brightness-95
-
-            "
-
+            src={product.image2}
+            alt={`${product.name} alternate view`}
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
+              isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
+            }`}
+            loading="lazy"
           />
-
-        </div>
-
-
-        {/* ==================================== */}
-        {/* PRODUCT CONTENT */}
-        {/* ==================================== */}
-
-        <div
-
-          className="
-
-            px-7
-
-            py-6
-
-          "
-
-        >
-
-
-          {/* PRODUCT NAME */}
-
-          <h3
-
-            className="
-
-              line-clamp-1
-
-              text-center
-
-              text-2xl
-
-              font-bold
-
-              text-[#14172E]
-
-            "
-
-          >
-
-            {product.name}
-
-          </h3>
-
-
-          {/* RATING */}
-
-          <div
-
-            className="
-
-              mt-4
-
-              flex
-
-              items-center
-
-              justify-center
-
-              gap-1
-
-            "
-
-          >
-
-            {[
-
-              1,
-
-              2,
-
-              3,
-
-              4,
-
-              5,
-
-            ].map(
-
-              (star) => (
-
-                <FaStar
-
-                  key={
-                    star
-                  }
-
-                  className={
-
-                    star <=
-                    Math.round(
-                      rating
-                    )
-
-                      ?
-
-                      "text-sm text-yellow-400"
-
-                      :
-
-                      "text-sm text-gray-300"
-
-                  }
-
-                />
-
-              )
-
-            )}
-
-
-            <span
-
-              className="
-
-                ml-2
-
-                text-sm
-
-                text-gray-500
-
-              "
-
-            >
-
-              {rating > 0
-
-                ?
-
-                rating.toFixed(
-                  1
-                )
-
-                :
-
-                "No ratings"
-
-              }
-
-            </span>
-
-
-            {reviewCount > 0 && (
-
-              <span
-
-                className="
-
-                  text-sm
-
-                  text-gray-400
-
-                "
-
-              >
-
-                (
-
-                {reviewCount}
-
-                )
-
-              </span>
-
-            )}
-
-          </div>
-
-
-          {/* PRICE */}
-
-          <div
-
-            className="
-
-              mt-6
-
-              text-center
-
-            "
-
-          >
-
-            <span
-
-              className="
-
-                text-4xl
-
-                font-bold
-
-                text-[#FF6A3D]
-
-              "
-
-            >
-
-              {currency}
-
-              {product.price}
-
-            </span>
-
-          </div>
-
-
-          {/* ADD TO CART */}
-
-          <motion.button
-
-            type="button"
-
-            whileHover={{
-
-              scale: 1.03,
-
-            }}
-
-            whileTap={{
-
-              scale: 0.95,
-
-            }}
-
-            onClick={
-              handleAddToCart
-            }
-
-            className="
-
-              mt-7
-
-              flex
-
-              w-full
-
-              items-center
-
-              justify-center
-
-              gap-3
-
-              rounded-2xl
-
-              bg-[#14172E]
-
-              py-4
-
-              text-lg
-
-              font-semibold
-
-              text-white
-
-              transition-all
-
-              duration-300
-
-              hover:bg-[#FF6A3D]
-
-            "
-
-          >
-
-            <FaShoppingCart />
-
-            Add to Cart
-
-          </motion.button>
-
-        </div>
-
-      </motion.div>
-
-
-      {/* ====================================== */}
-      {/* SIZE SELECTION POPUP */}
-      {/* ====================================== */}
-
-      <AnimatePresence>
-
-        {showSizePopup && (
-
-          <motion.div
-
-            initial={{
-
-              opacity: 0,
-
-            }}
-
-            animate={{
-
-              opacity: 1,
-
-            }}
-
-            exit={{
-
-              opacity: 0,
-
-            }}
-
-            onClick={
-              handleClosePopup
-            }
-
-            className="
-
-              fixed
-
-              inset-0
-
-              z-[9999]
-
-              flex
-
-              items-center
-
-              justify-center
-
-              bg-black/60
-
-              px-4
-
-              py-6
-
-              backdrop-blur-sm
-
-            "
-
-          >
-
-
-            {/* POPUP BOX */}
-
-            <motion.div
-
-              initial={{
-
-                opacity: 0,
-
-                scale: 0.85,
-
-                y: 30,
-
-              }}
-
-              animate={{
-
-                opacity: 1,
-
-                scale: 1,
-
-                y: 0,
-
-              }}
-
-              exit={{
-
-                opacity: 0,
-
-                scale: 0.85,
-
-                y: 30,
-
-              }}
-
-              transition={{
-
-                type: "spring",
-
-                stiffness: 280,
-
-                damping: 23,
-
-              }}
-
-              onClick={
-
-                (event) =>
-
-                  event.stopPropagation()
-
-              }
-
-              className="
-
-                relative
-
-                w-full
-
-                max-w-md
-
-                overflow-hidden
-
-                rounded-[32px]
-
-                bg-white
-
-                shadow-2xl
-
-              "
-
-            >
-
-
-              {/* CLOSE BUTTON */}
-
-              <button
-
-                type="button"
-
-                onClick={
-                  handleClosePopup
-                }
-
-                className="
-
-                  absolute
-
-                  right-5
-
-                  top-5
-
-                  z-20
-
-                  flex
-
-                  h-10
-
-                  w-10
-
-                  items-center
-
-                  justify-center
-
-                  rounded-full
-
-                  bg-gray-100
-
-                  text-gray-600
-
-                  transition
-
-                  hover:bg-[#FF6A3D]
-
-                  hover:text-white
-
-                "
-
-              >
-
-                <FaTimes />
-
-              </button>
-
-
-              {/* PRODUCT PREVIEW */}
-
-              <div
-
-                className="
-
-                  flex
-
-                  items-center
-
-                  gap-4
-
-                  bg-[#F8F5EF]
-
-                  p-6
-
-                  pr-16
-
-                "
-
-              >
-
-                <img
-
-                  src={
-                    product.image1
-                  }
-
-                  alt={
-                    product.name
-                  }
-
-                  className="
-
-                    h-20
-
-                    w-20
-
-                    rounded-2xl
-
-                    object-cover
-
-                  "
-
-                />
-
-
-                <div>
-
-                  <h2
-
-                    className="
-
-                      line-clamp-2
-
-                      text-xl
-
-                      font-bold
-
-                      text-[#14172E]
-
-                    "
-
-                  >
-
-                    {product.name}
-
-                  </h2>
-
-
-                  <p
-
-                    className="
-
-                      mt-1
-
-                      text-lg
-
-                      font-bold
-
-                      text-[#FF6A3D]
-
-                    "
-
-                  >
-
-                    {currency}
-
-                    {product.price}
-
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              {/* SIZE CONTENT */}
-
-              <div
-
-                className="
-
-                  p-6
-
-                  sm:p-8
-
-                "
-
-              >
-
-
-                <h3
-
-                  className="
-
-                    text-2xl
-
-                    font-bold
-
-                    text-[#14172E]
-
-                  "
-
-                >
-
-                  Select your size
-
-                </h3>
-
-
-                <p
-
-                  className="
-
-                    mt-2
-
-                    text-sm
-
-                    text-gray-500
-
-                  "
-
-                >
-
-                  Choose the size that fits you best.
-
-                </p>
-
-
-                {/* SIZE BUTTONS */}
-
-                <div
-
-                  className="
-
-                    mt-6
-
-                    grid
-
-                    grid-cols-3
-
-                    gap-3
-
-                    sm:grid-cols-4
-
-                  "
-
-                >
-
-                  {(
-
-                    product.sizes &&
-
-                    product.sizes.length > 0
-
-                      ?
-
-                      product.sizes
-
-                      :
-
-                      [
-
-                        "S",
-
-                        "M",
-
-                        "L",
-
-                        "XL",
-
-                      ]
-
-                  ).map(
-
-                    (size) => (
-
-                      <button
-
-                        key={
-                          size
-                        }
-
-                        type="button"
-
-                        onClick={
-
-                          (event) =>
-
-                            handleSizeSelect(
-
-                              event,
-
-                              size
-
-                            )
-
-                        }
-
-                        className={`
-
-                          rounded-xl
-
-                          border-2
-
-                          px-4
-
-                          py-3
-
-                          font-bold
-
-                          transition-all
-
-                          duration-200
-
-                          ${
-
-                            selectedSize ===
-
-                            size
-
-                              ?
-
-                              "border-[#FF6A3D] bg-[#FF6A3D] text-white shadow-lg"
-
-                              :
-
-                              "border-gray-200 bg-white text-[#14172E] hover:border-[#FF6A3D]"
-
-                          }
-
-                        `}
-
-                      >
-
-                        {size}
-
-                      </button>
-
-                    )
-
-                  )}
-
-                </div>
-
-
-                {/* ERROR */}
-
-                {sizeError && (
-
-                  <p
-
-                    className="
-
-                      mt-4
-
-                      rounded-xl
-
-                      bg-red-50
-
-                      px-4
-
-                      py-3
-
-                      text-sm
-
-                      font-medium
-
-                      text-red-600
-
-                    "
-
-                  >
-
-                    {sizeError}
-
-                  </p>
-
-                )}
-
-
-                {/* CONFIRM BUTTON */}
-
-                <motion.button
-
-                  type="button"
-
-                  whileHover={{
-
-                    scale: 1.02,
-
-                  }}
-
-                  whileTap={{
-
-                    scale: 0.98,
-
-                  }}
-
-                  onClick={
-
-                    handleConfirmAddToCart
-
-                  }
-
-                  className="
-
-                    mt-7
-
-                    flex
-
-                    w-full
-
-                    items-center
-
-                    justify-center
-
-                    gap-3
-
-                    rounded-2xl
-
-                    bg-[#14172E]
-
-                    py-4
-
-                    text-lg
-
-                    font-bold
-
-                    text-white
-
-                    transition
-
-                    hover:bg-[#FF6A3D]
-
-                  "
-
-                >
-
-                  <FaShoppingCart />
-
-                  Add Size
-
-                  {" "}
-
-                  {selectedSize || "—"}
-
-                  {" "}
-
-                  to Cart
-
-                </motion.button>
-
-              </div>
-
-            </motion.div>
-
-          </motion.div>
-
         )}
 
-      </AnimatePresence>
+        {/* Streetwear Badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
+          {product.bestseller && (
+            <span className="badge-streetwear bg-[#0D0D11]/90 text-white border border-white/10 shadow-sm flex items-center gap-1">
+              <Flame size={11} className="text-[#FF462D]" fill="currentColor" />
+              Bestseller
+            </span>
+          )}
 
-    </>
+          {isUpcoming ? (
+            <span className="badge-streetwear bg-[#FF462D] text-white shadow-md">
+              {product.dropBadge || "DROP 02 • SOON"}
+            </span>
+          ) : (
+            <span className="badge-streetwear bg-white/95 text-neutral-900 border border-neutral-200/80 shadow-sm">
+              240 GSM • Oversized
+            </span>
+          )}
+        </div>
 
+        {/* Quick View / Notification Trigger */}
+        <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md shadow-md flex items-center justify-center text-neutral-800 hover:text-[#FF462D] transition-colors">
+            <Eye size={15} />
+          </div>
+        </div>
+
+        {/* Quick Add Size Bar (Slide Up on Hover) */}
+        {!isUpcoming && (
+          <div
+            className={`absolute inset-x-3 bottom-3 z-20 transition-all duration-300 ${
+              isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
+            }`}
+          >
+            {showQuickAdd ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-[#121217]/95 backdrop-blur-xl border border-white/20 p-2.5 rounded-2xl shadow-xl flex flex-col gap-1.5 text-white"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between text-[11px] font-bold text-neutral-300 px-1">
+                  <span>SELECT SIZE:</span>
+                  <button
+                    onClick={() => setShowQuickAdd(false)}
+                    className="text-neutral-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="flex gap-1.5">
+                  {sizes.map((sz) => (
+                    <button
+                      key={sz}
+                      onClick={(e) => handleQuickAdd(e, sz)}
+                      className="flex-1 py-1.5 rounded-lg bg-white/10 hover:bg-[#FF462D] text-white text-xs font-black transition-colors"
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowQuickAdd(true);
+                }}
+                className="w-full py-3 rounded-2xl bg-[#0D0D11]/90 hover:bg-[#FF462D] text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <ShoppingBag size={14} />
+                <span>+ Quick Add</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Teaser Drop Action Bar */}
+        {isUpcoming && (
+          <div
+            className={`absolute inset-x-3 bottom-3 z-20 transition-all duration-300 ${
+              isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
+            }`}
+          >
+            <button
+              onClick={handleNotifyClick}
+              className={`w-full py-3 rounded-2xl text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                notified
+                  ? "bg-[#00E599] text-black font-extrabold"
+                  : "bg-[#0D0D11]/90 hover:bg-[#FF462D] text-white"
+              }`}
+            >
+              {notified ? (
+                <>
+                  <Check size={14} />
+                  <span>On The VIP List!</span>
+                </>
+              ) : (
+                <>
+                  <Bell size={14} />
+                  <span>Notify When Live</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Login Prompt Overlay (for issue #9) */}
+        <AnimatePresence>
+          {loginAlert && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-4 z-30 bg-black/90 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white"
+            >
+              <ShieldAlert size={26} className="text-[#FF462D] mb-2" />
+              <p className="font-heading font-bold text-sm">Please Sign In First</p>
+              <p className="text-[11px] text-neutral-400 mt-1">
+                Redirecting to account login...
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ================= CONTENT STAGE ================= */}
+      <div className="p-5 flex flex-col justify-between flex-1 bg-white">
+        <div>
+          {/* Category & Rating */}
+          <div className="flex items-center justify-between gap-2 mb-1.5 text-xs text-neutral-500">
+            <span className="font-semibold uppercase tracking-wider text-[10px]">
+              {product.category || "Unisex"} • {product.subCategory || "Oversized"}
+            </span>
+
+            <div className="flex items-center gap-1 font-bold text-neutral-800 text-xs">
+              <Star size={12} className="text-[#FF462D] fill-[#FF462D]" />
+              <span>{rating.toFixed(1)}</span>
+              <span className="text-neutral-400 font-normal">({reviewCount})</span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h3 className="font-heading text-base sm:text-lg font-bold text-neutral-900 line-clamp-1 group-hover:text-[#FF462D] transition-colors">
+            {product.name}
+          </h3>
+        </div>
+
+        {/* Price & Status */}
+        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="font-heading text-lg sm:text-xl font-extrabold text-neutral-900">
+              {currency}{product.price}
+            </span>
+            <span className="text-xs text-neutral-400 line-through">
+              {currency}{Math.round(product.price * 1.35)}
+            </span>
+          </div>
+
+          {isUpcoming ? (
+            <span className="text-[11px] font-bold text-[#FF462D] uppercase tracking-wider">
+              Drop 02 Preview
+            </span>
+          ) : (
+            <span className="text-[11px] font-semibold text-[#00A878] flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00A878] animate-pulse" />
+              In Stock
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
-
 }
-
-
-export default Card;
