@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag,
   Trash2,
@@ -9,8 +8,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ShieldCheck,
-  Sparkles,
-  Truck,
   Heart,
 } from "lucide-react";
 import { shopDataContext } from "../context/ShopContext";
@@ -49,12 +46,8 @@ export default function Cart() {
 
   const subtotal = typeof getCartAmount === "function" ? getCartAmount() : 0;
   const cartCount = typeof getCartCount === "function" ? getCartCount() : 0;
-  const freeShippingThreshold = 999;
-  const isFreeDelivery = subtotal >= freeShippingThreshold;
-  const finalDeliveryFee = subtotal > 0 && !isFreeDelivery ? deliveryFee : 0;
+  const finalDeliveryFee = subtotal > 0 ? deliveryFee : 0;
   const total = subtotal + finalDeliveryFee;
-  const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
-  const progressToFreeShipping = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const ngoContribution = Math.round(subtotal * 0.10);
 
   if (cartLoading) {
@@ -63,8 +56,8 @@ export default function Cart() {
         <Nav />
         <div className="py-24 text-center">
           <div className="w-8 h-8 rounded-full border-2 border-[#58545F] border-t-transparent animate-spin mx-auto mb-4" />
-          <p className="font-display text-xs uppercase tracking-wider text-[#7E7785] font-bold">
-            Loading Street Bag...
+          <p className="font-heading text-xs uppercase tracking-wider text-[#7E7785] font-bold">
+            Loading Your Bag...
           </p>
         </div>
         <Footer />
@@ -82,19 +75,19 @@ export default function Cart() {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#58545F] text-white text-[11px] font-black uppercase tracking-wider mb-2 shadow-xs">
               <ShoppingBag size={13} className="text-[#FDAC98]" />
-              <span>Streetwear Drops Cart</span>
+              <span>FurEver Shopping Bag</span>
             </div>
-            <h1 className="font-display font-black text-3xl sm:text-4xl uppercase tracking-tight text-[#2B2730]">
-              Your Street Bag <span className="text-[#7E7785] font-normal">({cartCount} {cartCount === 1 ? "tee" : "tees"})</span>
+            <h1 className="font-heading font-black text-3xl sm:text-4xl uppercase tracking-tight text-[#2B2730]">
+              Your Bag <span className="text-[#7E7785] font-normal">({cartCount} {cartCount === 1 ? "piece" : "pieces"})</span>
             </h1>
           </div>
 
           <Link
-            to="/collections"
+            to="/originals"
             className="hidden sm:flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#58545F] hover:text-[#2B2730] transition-colors"
           >
             <ArrowLeft size={14} />
-            <span>Continue Shopping 🐾</span>
+            <span>Continue Exploring 🐾</span>
           </Link>
         </div>
 
@@ -103,17 +96,17 @@ export default function Cart() {
             <div className="w-20 h-20 rounded-full bg-[#FAF6F2] text-[#DC8E90] flex items-center justify-center mx-auto mb-4 text-3xl">
               🐾
             </div>
-            <h2 className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730] mb-2">
-              Your Street Bag is Empty
+            <h2 className="font-heading font-black text-2xl uppercase tracking-tight text-[#2B2730] mb-2">
+              Your Bag is Empty
             </h2>
             <p className="text-xs sm:text-sm text-[#58545F] mb-6 font-medium">
-              You haven't added any 240 GSM heavyweight tees yet! Cop our Drop 001 oversized graphics or build your custom pet line art tee.
+              Explore our original animal graphic silhouettes or create a personalized custom memory tee for your companion.
             </p>
             <button
-              onClick={() => navigate("/collections")}
+              onClick={() => navigate("/originals")}
               className="px-8 py-3.5 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
             >
-              Explore Streetwear Drops 🐾
+              Explore Originals 🐾
             </button>
           </div>
         ) : (
@@ -121,35 +114,6 @@ export default function Cart() {
             
             {/* LEFT: CART ITEMS LIST (8 COLS) */}
             <div className="lg:col-span-8 space-y-4">
-              
-              {/* Free Shipping Tracker */}
-              <div className="p-4 rounded-2xl bg-white border border-[#EDE4DD] shadow-xs">
-                <div className="flex items-center justify-between text-xs font-bold text-[#2B2730] mb-2">
-                  <span className="flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-[#DC8E90]" />
-                    {isFreeDelivery ? (
-                      <span className="font-black text-emerald-700 uppercase tracking-wider text-[11px]">
-                        🎉 You've unlocked FREE Express Shipping across India!
-                      </span>
-                    ) : (
-                      <span className="text-[11px] text-[#58545F]">
-                        Add <strong className="text-[#2B2730]">{currency}{amountToFreeShipping}</strong> more for FREE shipping
-                      </span>
-                    )}
-                  </span>
-                  <span className="text-[#7E7785] text-[11px] font-black">{progressToFreeShipping}%</span>
-                </div>
-                <div className="w-full h-2 bg-[#F5EFEB] rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      isFreeDelivery ? "bg-emerald-600" : "bg-[#DC8E90]"
-                    }`}
-                    style={{ width: `${progressToFreeShipping}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Items */}
               {cartEntries.map(({ productId, size, quantity, product }) => (
                 <div
                   key={`${productId}-${size}`}
@@ -166,7 +130,7 @@ export default function Cart() {
                       <div className="flex items-start justify-between gap-2">
                         <Link
                           to={`/product/${productId}`}
-                          className="font-display font-black text-sm sm:text-base uppercase tracking-tight text-[#2B2730] hover:text-[#DC8E90] transition-colors truncate"
+                          className="font-heading font-black text-sm sm:text-base uppercase tracking-tight text-[#2B2730] hover:text-[#DC8E90] transition-colors truncate"
                         >
                           {product.name}
                         </Link>
@@ -184,7 +148,7 @@ export default function Cart() {
                           SIZE: {size}
                         </span>
                         <span className="px-2.5 py-0.5 rounded-md bg-[#DC8E90]/15 text-[10px] font-black uppercase tracking-wider text-[#A97882]">
-                          240 GSM
+                          {product.category || "Furever Animals"}
                         </span>
                         <span className="text-xs font-bold text-[#58545F]">
                           {currency}{product.price} each
@@ -213,7 +177,7 @@ export default function Cart() {
                       </div>
 
                       {/* Total for item */}
-                      <span className="font-display font-black text-base sm:text-lg text-[#2B2730]">
+                      <span className="font-heading font-black text-base sm:text-lg text-[#2B2730]">
                         {currency}{product.price * quantity}
                       </span>
                     </div>
@@ -224,71 +188,68 @@ export default function Cart() {
 
             {/* RIGHT: ORDER SUMMARY (4 COLS) */}
             <div className="lg:col-span-4">
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#EDE4DD] shadow-xs sticky top-28 space-y-6">
-                <h3 className="font-display font-black text-base uppercase tracking-wider text-[#2B2730]">
-                  Order Summary
-                </h3>
-
-                {/* 10% Social Impact Ribbon */}
-                <div className="p-3.5 rounded-2xl bg-[#DC8E90]/15 border border-[#DC8E90]/30 flex items-center gap-2.5">
-                  <Heart size={16} className="text-[#DC8E90] shrink-0 fill-[#DC8E90]" />
-                  <span className="text-[11px] font-bold text-[#2B2730] leading-tight">
-                    🐾 10% of this purchase (<strong>₹{ngoContribution}</strong>) goes directly to local stray rescue & shelter food funds!
-                  </span>
+              <div className="bg-white rounded-3xl border border-[#EDE4DD] p-6 sm:p-8 shadow-xs sticky top-28 space-y-6">
+                
+                {/* 10% Animal Welfare Callout */}
+                <div className="p-4 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#DC8E90] text-white flex items-center justify-center shrink-0">
+                    <Heart size={18} fill="currentColor" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#A97882] block">
+                      10% TO ANIMAL WELFARE
+                    </span>
+                    <span className="text-xs text-[#2B2730] font-semibold">
+                      Your order dedicates <strong>{currency}{ngoContribution}</strong> to stray animal care.
+                    </span>
+                  </div>
                 </div>
 
-                <div className="space-y-3 text-xs border-b border-[#EDE4DD] pb-4">
-                  <div className="flex justify-between text-[#58545F] font-medium">
-                    <span>Items Subtotal</span>
-                    <span className="font-black text-[#2B2730]">{currency}{subtotal}</span>
+                <div>
+                  <h3 className="font-heading font-black text-lg uppercase tracking-tight text-[#2B2730] mb-4">
+                    Order Summary
+                  </h3>
+
+                  <div className="space-y-3 text-xs border-b border-[#EDE4DD] pb-4">
+                    <div className="flex justify-between text-[#58545F] font-medium">
+                      <span>Subtotal ({cartCount} {cartCount === 1 ? "piece" : "pieces"})</span>
+                      <span className="font-bold text-[#2B2730]">{currency}{subtotal}</span>
+                    </div>
+                    <div className="flex justify-between text-[#58545F] font-medium">
+                      <span>Standard Shipping</span>
+                      <span className="font-bold text-[#2B2730]">{currency}{finalDeliveryFee}</span>
+                    </div>
                   </div>
 
-                  <div className="flex justify-between text-[#58545F] font-medium">
-                    <span>Doorstep Express Delivery</span>
-                    <span>
-                      {isFreeDelivery ? (
-                        <span className="text-emerald-700 font-black">FREE</span>
-                      ) : (
-                        `${currency}${finalDeliveryFee}`
-                      )}
+                  <div className="pt-4 flex justify-between items-baseline mb-6">
+                    <span className="font-heading font-black text-base uppercase tracking-wider text-[#2B2730]">
+                      Total
+                    </span>
+                    <span className="font-heading font-black text-2xl sm:text-3xl text-[#2B2730]">
+                      {currency}{total}
                     </span>
                   </div>
 
-                  <div className="flex justify-between text-[#58545F] font-medium">
-                    <span>Partner NGO Impact</span>
-                    <span className="text-[#DC8E90] font-black">10% Net Profit ❤️</span>
+                  <button
+                    onClick={() => navigate("/placeorder")}
+                    className="w-full py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Proceed to Checkout</span>
+                    <ArrowRight size={16} />
+                  </button>
+
+                  <div className="mt-4 pt-4 border-t border-[#EDE4DD] flex items-center justify-center gap-2 text-[10px] text-[#7E7785] font-semibold text-center">
+                    <ShieldCheck size={14} className="text-[#DC8E90]" />
+                    <span>Heavyweight Combed Cotton • 7-Day Size Exchanges</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-baseline">
-                  <span className="font-display font-black text-sm uppercase tracking-wider text-[#2B2730]">Total Due</span>
-                  <span className="font-display font-black text-2xl text-[#2B2730]">
-                    {currency}{total}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => navigate("/placeorder")}
-                  className="w-full py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Proceed to Checkout</span>
-                  <ArrowRight size={16} />
-                </button>
-
-                <div className="p-4 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] text-xs text-[#58545F] space-y-2">
-                  <div className="flex items-center gap-2 text-[#2B2730] font-bold">
-                    <ShieldCheck size={16} className="text-[#DC8E90]" />
-                    <span>The Furever Heavyweight Guarantee</span>
-                  </div>
-                  <p className="text-[11px] text-[#7E7785] font-medium leading-relaxed">
-                    240 GSM Combed Cotton, 7-day hassle-free size swaps, and 24h WhatsApp digital proof for custom memory tees.
-                  </p>
-                </div>
               </div>
             </div>
 
           </div>
         )}
+
       </main>
 
       <Footer />

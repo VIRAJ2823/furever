@@ -1,173 +1,247 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import {
-  ArrowRight,
-  Sparkles,
-  Flame,
-  Heart,
-  CheckCircle2,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-const STATS = [
-  { value: "240 GSM", label: "Pure Combed Cotton" },
-  { value: "10% NET PROFIT", label: "Direct to Animal NGOs" },
-  { value: "DROP 001", label: "Limited Batch Production" },
-  { value: "BOXY FIT", label: "Tailored Drop Shoulder" },
+const PILLARS = [
+  { value: "ORIGINALS", label: "Animal Stories Made by Furever" },
+  { value: "CUSTOMS", label: "Your Pet. Your Memory." },
 ];
 
 export default function Hero() {
   const navigate = useNavigate();
+  const videoRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const attemptPlay = () => {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          // Handled silently: browser deferred autoplay
+          console.warn("Autoplay deferred:", err);
+        });
+      }
+    };
+
+    attemptPlay();
+
+    video.addEventListener("loadedmetadata", attemptPlay);
+    video.addEventListener("canplay", attemptPlay);
+
+    return () => {
+      video.removeEventListener("loadedmetadata", attemptPlay);
+      video.removeEventListener("canplay", attemptPlay);
+    };
+  }, []);
+
+  // Staggered entrance animation variants for luxury editorial presentation
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.18,
+        delayChildren: shouldReduceMotion ? 0 : 0.2,
+      },
+    },
+  };
+
+  const titleVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 32 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.1 : 0.9,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
+  const taglineVariants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 22,
+      filter: shouldReduceMotion ? "none" : "blur(4px)",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: shouldReduceMotion ? 0.1 : 0.9,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
+  const buttonVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.1 : 0.8,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
 
   return (
-    <section className="relative w-full bg-[#FAF6F2] text-[#2B2730] overflow-hidden pt-8 pb-16 lg:py-20 border-b border-[#EDE4DD]">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="hero-stage relative w-full bg-[#0E1719] text-[#FAF8F5] overflow-hidden">
+      {/* ================= 1. FULL-WIDTH CINEMATIC HERO STAGE ================= */}
+      <div className="relative w-full max-w-full min-w-0 min-h-[calc(100svh-56px)] sm:min-h-[calc(100svh-64px)] lg:min-h-0 lg:h-[calc(100vh-80px)] lg:max-h-[1080px] overflow-hidden bg-[#0E1719] flex flex-col justify-center items-center px-3 sm:px-6 py-4 sm:py-8 lg:p-0 lg:block">
         
-        {/* ================= HERO GRID ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          
-          {/* LEFT: EDITORIAL COPY & CTAS (7 COLS) */}
-          <div className="lg:col-span-7 flex flex-col items-start z-10">
-            
-            {/* Mission Badge - Warm Sophistication */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#EDE4DD] text-[#58545F] mb-6 shadow-2xs"
+        {/* VIDEO CONTAINER / STAGE */}
+        <div className="relative w-full max-w-full sm:max-w-[560px] min-w-0 aspect-[16/9] flex items-center justify-center overflow-hidden lg:max-w-none lg:w-full lg:h-full lg:aspect-auto lg:absolute lg:inset-0">
+          <motion.div
+            initial={
+              shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 1.04 }
+            }
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: shouldReduceMotion ? 0.1 : 1.4,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="w-full h-full max-w-full flex items-center justify-center"
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster="/images/furever-logo-white.png"
+              disablePictureInPicture
+              disableRemotePlayback
+              tabIndex={-1}
+              aria-hidden="true"
+              className="hero-video w-full h-full max-w-full object-contain lg:object-cover object-center pointer-events-none select-none"
+              style={{ objectPosition: "center" }}
             >
-              <span className="w-2.5 h-2.5 rounded-full bg-[#DC8E90] animate-pulse" />
-              <span className="font-heading text-[11px] font-extrabold uppercase tracking-wider">
-                DROP 001 IS LIVE • <span className="text-[#DC8E90]">10% TO ANIMAL WELFARE</span>
-              </span>
-            </motion.div>
-
-            {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="font-heading font-black text-4xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl tracking-tighter leading-[0.95] mb-6 uppercase text-[#2B2730]"
-            >
-              WEAR YOUR LOVE. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2B2730] via-[#58545F] to-[#DC8E90]">
-                IMPACT A LIFE.
-              </span>
-            </motion.h1>
-
-            {/* Subhead */}
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[#58545F] text-base sm:text-lg md:text-xl font-medium max-w-xl mb-8 leading-relaxed"
-            >
-              Heavyweight 240 GSM Cotton Streetwear Drops. Animal-inspired line art & customizable pet memory tees designed for clean, boxy drape.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10"
-            >
-              {/* Primary Davy's Gray / Accent Button */}
-              <button
-                onClick={() => navigate("/collections")}
-                className="pill-button px-8 sm:px-10 py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-heading font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-3 cursor-pointer"
-              >
-                <span>Shop Drop 001</span>
-                <ArrowRight size={16} />
-              </button>
-
-              {/* Light Coral / Apricot Accent Button */}
-              <button
-                onClick={() => navigate("/product/fur-custom-01")}
-                className="pill-button px-7 py-4 rounded-full bg-white hover:bg-[#FAF6F2] border-2 border-[#DC8E90] text-[#2B2730] font-heading font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Customize My Pet Tee ₹429</span>
-                <span className="text-xs">🐾</span>
-              </button>
-            </motion.div>
-
-            {/* Micro Highlights */}
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#58545F] font-semibold">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-[#DC8E90]" />
-                Zero Plastic Plastisol Inks
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-[#DC8E90]" />
-                Unisex Boxy Oversized Drape
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-[#DC8E90]" />
-                WhatsApp Art Proof in 24h
-              </span>
-            </div>
-
-          </div>
-
-          {/* RIGHT: AUTHENTIC CUSTOMS ARTWORK DISPLAY (NO FAKE CLOTHES) (5 COLS) */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden bg-white border border-[#EDE4DD] shadow-lg"
-            >
-              <img
-                src="/images/customs/lineart-black.png"
-                alt="240 GSM Custom Pet Line Art Tee"
-                className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+              {/* Exact target video: gemini_generated_video_3ee252b8_gwr_video_mvp (3).mp4 */}
+              <source
+                src="/videos/gemini_generated_video_3ee252b8_gwr_video_mvp%20(3).mp4"
+                type="video/mp4"
               />
+              <source
+                src="/videos/gemini_generated_video_3ee252b8_gwr_video_mvp (3).mp4"
+                type="video/mp4"
+              />
+              <source src="/videos/furever-hero.mp4" type="video/mp4" />
+              <img
+                src="/images/furever-logo-white.png"
+                alt="Furever"
+                className="w-36 h-auto object-contain opacity-70 mx-auto"
+              />
+            </video>
+          </motion.div>
 
-              {/* Floating Pill Tag */}
-              <div className="absolute top-4 left-4 bg-[#2B2730]/90 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase flex items-center gap-1.5 shadow-sm">
-                <Flame size={12} className="text-[#FDAC98]" fill="currentColor" />
-                <span>Memory Series Customs • ₹429</span>
-              </div>
+          {/* Top Edge Gradient Blend */}
+          <div className="hero-edge-blend-top absolute inset-x-0 top-0 h-10 sm:h-16 lg:h-28 pointer-events-none z-10" />
 
-              {/* Bottom Card Spotlight */}
-              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-[#EDE4DD] shadow-md flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#DC8E90] block">
-                    Make It Wearable
-                  </span>
-                  <span className="text-sm font-black text-[#2B2730] block">
-                    Custom Pet Line Art Tee
-                  </span>
-                  <span className="text-xs text-[#58545F] font-medium">From ₹429 • Line Art or Stencil</span>
-                </div>
-                <button
-                  onClick={() => navigate("/product/fur-custom-01")}
-                  className="pill-button px-4 py-2 rounded-full bg-[#58545F] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#DC8E90] transition-colors cursor-pointer"
-                >
-                  Create
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          {/* Bottom Edge Gradient Blend */}
+          <div className="hero-edge-blend-bottom absolute inset-x-0 bottom-0 h-14 sm:h-20 lg:h-48 pointer-events-none z-10" />
 
+          {/* Side Edge Gradient Blend for mobile/tablet */}
+          <div className="hero-edge-blend-sides absolute inset-0 pointer-events-none z-10 lg:hidden" />
+
+          {/* Radial Vignette for Desktop immersion */}
+          <div className="hero-vignette-radial hidden lg:block absolute inset-0 pointer-events-none z-10" />
         </div>
 
-        {/* ================= FAST STATS RAIL ================= */}
-        <div className="mt-14 sm:mt-16 pt-8 border-t border-[#EDE4DD] grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-          {STATS.map((s) => (
-            <div key={s.value} className="border-l-2 border-[#DC8E90] pl-4">
-              <p className="font-heading font-black text-xl sm:text-2xl text-[#2B2730] uppercase tracking-tight leading-none">
-                {s.value}
+        {/* ================= 2. REFINED EDITORIAL TEXT OVERLAY (UNOBSTRUCTED) ================= */}
+        <div className="relative z-20 w-full max-w-full min-w-0 flex flex-col items-center text-center mt-2 sm:mt-4 lg:mt-0 lg:absolute lg:inset-x-0 lg:bottom-12 pointer-events-none">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="pointer-events-auto flex flex-col items-center max-w-full sm:max-w-xl mx-auto w-full px-2"
+          >
+            {/* Wordmark */}
+            <motion.h1
+              variants={titleVariants}
+              className="font-heading font-black text-2xl sm:text-3xl lg:text-5xl uppercase tracking-[0.22em] text-[#FAF8F5] mb-1 sm:mb-2 select-none drop-shadow-md"
+            >
+              FUREVER
+            </motion.h1>
+
+            {/* Tagline */}
+            <motion.p
+              variants={taglineVariants}
+              className="font-serif italic text-xs sm:text-sm lg:text-base text-[#FAF8F5]/85 max-w-xs sm:max-w-md mb-4 sm:mb-6 leading-relaxed drop-shadow-sm"
+            >
+              &ldquo;Made from the bond we never outgrow.&rdquo;
+            </motion.p>
+
+            {/* Clean Functional CTAs */}
+            <motion.div
+              variants={buttonVariants}
+              className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 w-full max-w-[270px] sm:max-w-none mx-auto"
+            >
+              {/* Primary CTA */}
+              <motion.button
+                type="button"
+                whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -2 }}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                onClick={() => navigate("/collections")}
+                className="w-full sm:w-auto px-5 sm:px-8 py-3.5 rounded-full bg-[#FAF8F5] hover:bg-white text-[#141414] font-heading font-bold text-xs uppercase tracking-[0.12em] sm:tracking-[0.14em] transition-all shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center gap-2 group min-h-[44px]"
+              >
+                <span>Explore Collections</span>
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1 shrink-0"
+                />
+              </motion.button>
+
+              {/* Secondary CTA */}
+              <motion.button
+                type="button"
+                whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -2 }}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                onClick={() => navigate("/customs")}
+                className="w-full sm:w-auto px-5 sm:px-7 py-3.5 rounded-full bg-[#141414]/60 hover:bg-[#141414]/90 border border-[#FAF8F5]/30 hover:border-[#FAF8F5]/80 text-[#FAF8F5] font-heading font-bold text-xs uppercase tracking-[0.12em] sm:tracking-[0.14em] transition-all cursor-pointer backdrop-blur-md shadow-sm min-h-[44px]"
+              >
+                Create Your Custom
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ================= 3. BRAND PILLARS ================= */}
+      <motion.div
+        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="w-full bg-[#FAF8F5] border-t border-[#141414]/10 py-5 sm:py-6 px-4 sm:px-6 lg:px-8"
+      >
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+          {PILLARS.map((p) => (
+            <div
+              key={p.value}
+              className="border-l border-[#141414]/25 pl-4 py-1"
+            >
+              <p className="font-heading font-black text-xs sm:text-sm text-[#141414] uppercase tracking-wider leading-none">
+                {p.value}
               </p>
-              <p className="text-xs text-[#58545F] font-semibold mt-1 tracking-wide uppercase">
-                {s.label}
+              <p className="text-[11px] sm:text-xs text-[#141414]/65 font-medium mt-1 tracking-wide">
+                {p.label}
               </p>
             </div>
           ))}
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 }

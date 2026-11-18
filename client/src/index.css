@@ -6,31 +6,32 @@
     --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     
-    /* Warm Sophistication Palette (Cozy yet Refined) */
-    --color-apricot: #FFC5A6;
-    --color-melon: #FDAC98;
-    --color-light-coral: #DC8E90;
-    --color-mountbatten: #A97882;
-    --color-davys-gray: #58545F;
-    --color-deep-charcoal: #2B2730;
+    /* Furever Brand Tokens (Streetwear Identity) */
+    --paper: #FAF8F5;
+    --ink: #141414;
 
-    /* Primary Semantic Tokens */
-    --color-canvas: #FAF6F2;
+    /* User-Provided Palette (Frankly Wearing Inspired) */
+    --color-ivory: #E8E0D2;
+    --color-gold: #B89A5A;
+    --color-navy: #0E1D61;
+    --color-white: #FFFFFF;
+    --color-charcoal: #242424;
+
+    /* Semantic Tokens */
+    --color-canvas: #E8E0D2;
     --color-surface-card: #FFFFFF;
-    --color-surface-subtle: #F5EFEB;
-    --color-border-subtle: #EDE4DD;
-    --color-border-hover: #DC8E90;
+    --color-surface-subtle: #DFD7C7;
+    --color-border-subtle: #D6CCBC;
+    --color-border-accent: #B89A5A;
     
     /* Text Hierarchy Tokens */
-    --color-text-main: #2B2730;
-    --color-text-secondary: #58545F;
-    --color-text-muted: #7E7785;
+    --color-text-main: #242424;
+    --color-text-navy: #0E1D61;
+    --color-text-muted: #6B655B;
     
-    /* Accent & Action Tokens */
-    --color-accent-primary: #DC8E90;
-    --color-accent-secondary: #A97882;
-    --color-accent-warm: #FDAC98;
-    --color-accent-soft: #FFC5A6;
+    /* Action & Brand Tokens */
+    --color-primary: #0E1D61;
+    --color-accent: #B89A5A;
   }
 
   html {
@@ -58,8 +59,8 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    color: var(--color-text-main);
-    letter-spacing: -0.03em;
+    color: var(--color-text-navy);
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     font-weight: 800;
   }
@@ -71,14 +72,14 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F5EFEB;
+  background: #E8E0D2;
 }
 ::-webkit-scrollbar-thumb {
-  background: #DC8E90;
+  background: #B89A5A;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A97882;
+  background: #0E1D61;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -100,7 +101,7 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Streetwear Refined Badge Utility */
+/* Refined Badge Utility */
 .badge-street {
   display: inline-flex;
   align-items: center;
@@ -109,7 +110,7 @@
   font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   border-radius: 9999px;
 }
 
@@ -122,24 +123,26 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 26s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* Street Card Lift & Ultra-Fine Border */
-.street-card {
+/* Premium E-commerce Card Lift */
+.street-card,
+.premium-card {
   background-color: #FFFFFF;
-  border: 1px solid #EDE4DD;
+  border: 1px solid #D6CCBC;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
 }
 
-.street-card:hover {
+.street-card:hover,
+.premium-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 32px -8px rgba(88, 84, 95, 0.12);
-  border-color: #DC8E90;
+  box-shadow: 0 16px 32px -8px rgba(14, 29, 97, 0.10);
+  border-color: #B89A5A;
 }
 
 /* Pill Button Spring Feedback */
@@ -149,4 +152,93 @@
 }
 .pill-button:active {
   transform: scale(0.97);
+}
+
+/* ==========================================================================
+   CINEMATIC HERO & VIDEO INTEGRATION STYLES
+   ========================================================================== */
+
+/* Hero Stage Canvas: matched exactly to video background (#0E1719) */
+.hero-stage {
+  background-color: #0E1719;
+  isolation: isolate;
+}
+
+/* Hero Video: Hardware-accelerated, controls suppressed, unbordered */
+.hero-video {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  border: none;
+  background-color: #0E1719;
+}
+
+/* Hide all browser-native video controls across WebKit, Blink, and Gecko */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-play-button,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0;
+}
+
+/* Edge Blending Gradients to melt the video into the background */
+.hero-edge-blend-top {
+  background: linear-gradient(to bottom, #0E1719 0%, rgba(14, 23, 25, 0.6) 50%, transparent 100%);
+}
+
+.hero-edge-blend-bottom {
+  background: linear-gradient(to top, #0E1719 0%, rgba(14, 23, 25, 0.8) 55%, transparent 100%);
+}
+
+.hero-edge-blend-sides {
+  background: linear-gradient(to right, #0E1719 0%, transparent 12%, transparent 88%, #0E1719 100%);
+}
+
+.hero-vignette-radial {
+  background: radial-gradient(ellipse at center, transparent 48%, rgba(14, 23, 25, 0.5) 75%, #0E1719 100%);
+}
+
+/* ==========================================================================
+   FEATURED PIECES CONTINUOUS HORIZONTAL SLIDESHOW (LEFT-TO-RIGHT)
+   ========================================================================== */
+
+@keyframes featuredSlideshowLtr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.featured-slideshow-track {
+  display: flex;
+  width: max-content;
+  animation: featuredSlideshowLtr 45s linear infinite;
+  will-change: transform;
+  touch-action: pan-y;
+}
+
+/* Pause on desktop hover or keyboard focus anywhere inside track */
+.featured-slideshow-track:hover,
+.featured-slideshow-track:focus-within {
+  animation-play-state: paused;
+}
+
+/* Pause on active touch interaction without interrupting vertical scroll */
+.featured-slideshow-track:active {
+  animation-play-state: paused;
+}
+
+/* Accessible reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .featured-slideshow-track {
+    animation: none !important;
+    transform: none !important;
+  }
 }

@@ -14,13 +14,13 @@ export default function LatestCollection() {
       <div className="py-20 flex flex-col items-center justify-center text-center">
         <div className="w-8 h-8 rounded-full border-2 border-[#58545F] border-t-transparent animate-spin mb-4" />
         <p className="font-heading text-xs uppercase tracking-widest text-[#7E7785] font-bold">
-          Loading 240 GSM Streetwear Drops...
+          Loading Furever Drops & Customs...
         </p>
       </div>
     );
   }
 
-  // Display top 4 pieces (both Drop 001 and Customs)
+  // Display top 4 pieces (Originals & Customs)
   const displayRoster = products.slice(0, 4);
 
   return (

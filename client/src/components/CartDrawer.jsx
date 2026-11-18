@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Sparkles, Heart } from "lucide-react";
+import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Heart } from "lucide-react";
 import { shopDataContext } from "../context/ShopContext";
 
 export default function CartDrawer() {
@@ -21,9 +21,6 @@ export default function CartDrawer() {
 
   const cartCount = typeof getCartCount === "function" ? getCartCount() : 0;
   const subtotal = typeof getCartAmount === "function" ? getCartAmount() : 0;
-  const freeShippingThreshold = 999;
-  const progressToFreeShipping = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
-  const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
   const ngoContribution = Math.round(subtotal * 0.10);
 
   // Flatten cart items
@@ -76,15 +73,15 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#EDE4DD] bg-white">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#58545F] flex items-center justify-center text-white font-bold text-sm shadow-xs">
-                  🐾
+                <div className="w-10 h-10 rounded-2xl bg-[#2B2730] flex items-center justify-center text-white shadow-xs">
+                  <ShoppingBag size={18} />
                 </div>
                 <div>
-                  <h2 className="font-display text-lg font-black uppercase tracking-tight text-[#2B2730]">
-                    Your Street Bag
+                  <h2 className="font-heading text-lg font-black uppercase tracking-tight text-[#2B2730]">
+                    Your Bag
                   </h2>
                   <p className="text-[11px] text-[#58545F] font-semibold">
-                    {cartCount} {cartCount === 1 ? "tee" : "tees"} in bag • 10% to Animal NGOs
+                    {cartCount} {cartCount === 1 ? "item" : "items"} • 10% to Animal Welfare
                   </p>
                 </div>
               </div>
@@ -98,35 +95,6 @@ export default function CartDrawer() {
               </button>
             </div>
 
-            {/* Free Shipping & Mission Bar */}
-            <div className="px-6 py-3.5 bg-white border-b border-[#EDE4DD]">
-              <div className="flex items-center justify-between text-xs font-bold mb-2">
-                <span className="flex items-center gap-1.5 text-[#2B2730]">
-                  <Sparkles size={14} className="text-[#DC8E90]" />
-                  {subtotal >= freeShippingThreshold ? (
-                    <span className="font-black text-emerald-700 uppercase tracking-wider text-[11px]">
-                      🎉 You unlocked FREE Prepaid Express Shipping!
-                    </span>
-                  ) : (
-                    <span className="text-[11px] text-[#58545F]">
-                      Add <strong className="text-[#2B2730]">{currency}{amountToFreeShipping}</strong> more for FREE Shipping
-                    </span>
-                  )}
-                </span>
-                <span className="text-[#7E7785] text-[11px] font-black">{progressToFreeShipping}%</span>
-              </div>
-              <div className="w-full h-2 bg-[#FAF6F2] rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressToFreeShipping}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className={`h-full rounded-full ${
-                    subtotal >= freeShippingThreshold ? "bg-emerald-700" : "bg-[#DC8E90]"
-                  }`}
-                />
-              </div>
-            </div>
-
             {/* Cart Items List */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3.5">
               {cartEntries.length === 0 ? (
@@ -134,20 +102,20 @@ export default function CartDrawer() {
                   <div className="w-20 h-20 rounded-3xl bg-white border border-[#EDE4DD] flex items-center justify-center mb-4 text-[#DC8E90] shadow-sm">
                     <ShoppingBag size={32} />
                   </div>
-                  <h3 className="font-display font-black text-base uppercase tracking-tight text-[#2B2730] mb-1.5">
-                    Your street bag is empty
+                  <h3 className="font-heading font-black text-base uppercase tracking-tight text-[#2B2730] mb-1.5">
+                    Your bag is empty
                   </h3>
                   <p className="text-xs text-[#58545F] max-w-xs mb-6 font-medium">
-                    Cop our 240 GSM heavyweight oversized graphic tees or customize your pet line art memory tee.
+                    Explore our original animal graphic silhouettes or create a custom memory tee for your companion.
                   </p>
                   <button
                     onClick={() => {
                       setIsCartDrawerOpen(false);
-                      navigate("/collections");
+                      navigate("/originals");
                     }}
-                    className="px-6 py-3 rounded-full bg-[#58545F] hover:bg-[#DC8E90] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                    className="px-6 py-3 rounded-full bg-[#2B2730] hover:bg-[#58545F] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
                   >
-                    Explore Drop 001 🐾
+                    Explore Originals
                   </button>
                 </div>
               ) : (
@@ -160,62 +128,54 @@ export default function CartDrawer() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="flex gap-4 p-3.5 rounded-2xl bg-white border border-[#EDE4DD] hover:border-[#DC8E90] transition-all shadow-2xs"
                   >
-                    {/* Thumbnail (Authentic PDF Art) */}
+                    {/* Thumbnail */}
                     <img
                       src={product.images?.black || product.image1 || product.image?.[0]}
                       alt={product.name}
-                      className="w-20 h-24 rounded-xl object-contain p-1 bg-[#F8F3EE] shrink-0 border border-[#EDE4DD]"
+                      className="w-20 h-24 rounded-xl object-contain p-1 bg-[#FAF6F2] shrink-0 border border-[#EDE4DD]"
                     />
 
                     {/* Info */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-xs font-black uppercase tracking-tight text-[#2B2730] truncate">
+                          <h4 className="font-heading font-black text-xs uppercase tracking-tight text-[#2B2730] line-clamp-1">
                             {product.name}
                           </h4>
                           <button
                             onClick={() => removeFromCart(productId, size)}
-                            className="text-[#7E7785] hover:text-rose-600 transition-colors p-1 cursor-pointer"
-                            title="Remove tee"
+                            className="text-[#7E7785] hover:text-rose-600 transition-colors p-1"
+                            aria-label="Remove item"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={13} />
                           </button>
                         </div>
-                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                          <span className="px-2 py-0.5 rounded-md bg-[#58545F] text-[10px] font-black uppercase tracking-wider text-white">
-                            SIZE: {size}
-                          </span>
-                          <span className="px-2 py-0.5 rounded-md bg-[#DC8E90]/15 text-[10px] font-black uppercase tracking-wider text-[#A97882]">
-                            240 GSM
-                          </span>
-                          <span className="text-xs font-bold text-[#58545F]">
-                            {currency}{product.price}
-                          </span>
-                        </div>
+                        <p className="text-[11px] text-[#58545F] font-bold mt-0.5">
+                          Size: <span className="text-[#DC8E90]">{size}</span> • {currency}{product.price}
+                        </p>
                       </div>
 
-                      {/* Quantity & Price */}
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="inline-flex items-center border border-[#EDE4DD] rounded-full bg-[#FAF6F2]">
+                      {/* Quantity Stepper */}
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center border border-[#EDE4DD] rounded-lg bg-[#FAF6F2] overflow-hidden">
                           <button
                             onClick={() => updateQuantity(productId, size, quantity - 1)}
-                            className="w-7 h-7 flex items-center justify-center text-[#58545F] hover:text-[#2B2730] hover:bg-[#EDE4DD] rounded-full transition-colors cursor-pointer"
+                            className="w-7 h-7 flex items-center justify-center text-[#58545F] hover:bg-[#EDE4DD] transition-colors"
                           >
                             <Minus size={12} />
                           </button>
-                          <span className="w-7 text-center text-xs font-black text-[#2B2730]">
+                          <span className="w-8 text-center text-xs font-black text-[#2B2730]">
                             {quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(productId, size, quantity + 1)}
-                            className="w-7 h-7 flex items-center justify-center text-[#58545F] hover:text-[#2B2730] hover:bg-[#EDE4DD] rounded-full transition-colors cursor-pointer"
+                            className="w-7 h-7 flex items-center justify-center text-[#58545F] hover:bg-[#EDE4DD] transition-colors"
                           >
                             <Plus size={12} />
                           </button>
                         </div>
 
-                        <span className="font-display font-black text-sm text-[#2B2730]">
+                        <span className="font-heading font-black text-sm text-[#2B2730]">
                           {currency}{product.price * quantity}
                         </span>
                       </div>
@@ -225,15 +185,14 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {/* Drawer Footer */}
+            {/* Footer Summary */}
             {cartEntries.length > 0 && (
-              <div className="p-6 border-t border-[#EDE4DD] bg-white space-y-4">
-                
-                {/* 10% Social Mission Net Profit Highlight */}
-                <div className="p-3 rounded-2xl bg-[#DC8E90]/15 border border-[#DC8E90]/30 flex items-center gap-2.5">
-                  <Heart size={16} className="text-[#DC8E90] shrink-0 fill-[#DC8E90]" />
-                  <span className="text-[11px] font-bold text-[#2B2730] leading-tight">
-                    🐾 Your order donates <strong className="text-[#A97882]">₹{ngoContribution}</strong> directly to local animal rescue and sterilization programs!
+              <div className="p-6 bg-white border-t border-[#EDE4DD] space-y-4">
+                {/* 10% Contribution Banner */}
+                <div className="p-3 rounded-xl bg-[#FAF6F2] border border-[#EDE4DD] flex items-center gap-2.5 text-xs text-[#2B2730]">
+                  <Heart size={14} className="text-[#DC8E90] fill-[#DC8E90] shrink-0" />
+                  <span className="text-[11px] font-medium">
+                    This order contributes <strong>{currency}{ngoContribution}</strong> directly to animal welfare.
                   </span>
                 </div>
 
@@ -245,19 +204,13 @@ export default function CartDrawer() {
                     </span>
                   </div>
                   <div className="flex justify-between text-[#58545F] font-medium">
-                    <span>Express Shipping</span>
-                    <span>
-                      {subtotal >= freeShippingThreshold ? (
-                        <span className="text-emerald-700 font-black">FREE</span>
-                      ) : (
-                        `${currency}${deliveryFee}`
-                      )}
-                    </span>
+                    <span>Shipping</span>
+                    <span>{currency}{deliveryFee}</span>
                   </div>
                   <div className="pt-2 border-t border-[#EDE4DD] flex justify-between items-baseline">
-                    <span className="font-display text-sm font-black uppercase tracking-wider text-[#2B2730]">Total Amount</span>
-                    <span className="font-display text-2xl font-black text-[#2B2730]">
-                      {currency}{subtotal + (subtotal >= freeShippingThreshold ? 0 : deliveryFee)}
+                    <span className="font-heading text-sm font-black uppercase tracking-wider text-[#2B2730]">Total</span>
+                    <span className="font-heading text-2xl font-black text-[#2B2730]">
+                      {currency}{subtotal + deliveryFee}
                     </span>
                   </div>
                 </div>
@@ -281,7 +234,7 @@ export default function CartDrawer() {
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#7E7785] font-semibold pt-1">
                   <ShieldCheck size={14} className="text-[#DC8E90]" />
-                  <span>240 GSM Heavyweight Cotton • 7-Day Size Swaps • 10% NGO Grant</span>
+                  <span>Heavyweight Cotton • 7-Day Size Exchanges • 10% to Welfare</span>
                 </div>
               </div>
             )}

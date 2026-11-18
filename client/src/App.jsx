@@ -13,7 +13,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import Collections from "./pages/Collections";
+import Originals from "./pages/Originals";
+import Customs from "./pages/Customs";
 import ProductDetail from "./pages/ProductDetail";
+import Accessories from "./pages/Accessories";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Cart from "./pages/Cart";
@@ -114,6 +117,24 @@ function App() {
         }
       />
 
+      {/* ================= ORIGINALS ================= */}
+
+      <Route
+        path="/originals"
+        element={
+          <Originals />
+        }
+      />
+
+      {/* ================= CUSTOMS ================= */}
+
+      <Route
+        path="/customs"
+        element={
+          <Customs />
+        }
+      />
+
 
       {/* ================= PRODUCT DETAILS ================= */}
 
@@ -199,6 +220,16 @@ function App() {
 
           )
 
+        }
+      />
+
+
+      {/* ================= ACCESSORIES ================= */}
+
+      <Route
+        path="/accessories"
+        element={
+          <Accessories />
         }
       />
 

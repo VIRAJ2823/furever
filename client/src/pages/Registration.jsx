@@ -6,6 +6,7 @@ import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import googleLogo from "../assets/google.png";
 import paws from "../assets/paws.png";
+import FureverLogo from "../components/FureverLogo";
 import { authDataContext } from "../context/Authcontext.jsx";
 import { userDataContext } from "../context/UserContext.jsx";
 import { auth, provider } from "../utils/Firebase.js";
@@ -113,19 +114,14 @@ export default function Registration() {
       >
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#58545F] flex items-center justify-center p-2 shadow-xs">
-              <img src={paws} alt="Furever" className="w-full h-full object-contain" />
-            </div>
-            <span className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
-              FUR<span className="text-[#DC8E90]">EVER</span>
-            </span>
+          <Link to="/" className="inline-flex items-center justify-center mb-4">
+            <FureverLogo size="md" />
           </Link>
           <h1 className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
-            Join Furever Streetwear 🐾
+            Join the FurEver Community 🐾
           </h1>
           <p className="text-xs text-[#58545F] mt-1 font-medium">
-            Create an account to unlock 15% off Drop 001 and save your custom pet artwork proofs.
+            Create an account to track orders, explore new drops, and save custom pet artwork proofs.
           </p>
         </div>
 
@@ -214,7 +210,7 @@ export default function Registration() {
             disabled={status === "loading"}
             className="w-full py-4 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
           >
-            <span>{status === "loading" ? "Creating Account..." : "Create Streetwear Account 🐾"}</span>
+            <span>{status === "loading" ? "Creating Account..." : "Create FurEver Account 🐾"}</span>
             <ArrowRight size={15} />
           </button>
         </form>

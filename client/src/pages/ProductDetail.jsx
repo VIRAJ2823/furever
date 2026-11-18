@@ -150,13 +150,8 @@ export default function ProductDetail() {
   const handleAddToCart = async () => {
     if (!product) return;
 
-    if (!userData) {
-      navigate("/login", { state: { from: location.pathname } });
-      return;
-    }
-
     if (!selectedSize) {
-      setMessage("Please select your streetwear size.");
+      setMessage("Please select your size.");
       setTimeout(() => setMessage(""), 3000);
       return;
     }
@@ -183,13 +178,8 @@ export default function ProductDetail() {
   const handleBuyNow = async () => {
     if (!product) return;
 
-    if (!userData) {
-      navigate("/login", { state: { from: location.pathname } });
-      return;
-    }
-
     if (!selectedSize) {
-      setMessage("Please select your streetwear size.");
+      setMessage("Please select your size.");
       setTimeout(() => setMessage(""), 3000);
       return;
     }
@@ -202,7 +192,11 @@ export default function ProductDetail() {
 
     const success = await addToCart(product._id || product.id, selectedSize, quantity);
     if (success) {
-      navigate("/placeorder");
+      if (!userData) {
+        navigate("/login", { state: { from: "/placeorder" } });
+      } else {
+        navigate("/placeorder");
+      }
     }
   };
 
@@ -232,7 +226,7 @@ export default function ProductDetail() {
       );
 
       if (res.data.success) {
-        setMessage("Review posted! Thanks for rep'ing Furever Streetwear 🐾");
+        setMessage("Review posted! Thank you for sharing your love 🐾");
         setReviewText("");
         setReviewRating(5);
         const updated = await axios.get(`${serverUrl}/api/product/${product._id || product.id}/reviews`);
@@ -257,17 +251,17 @@ export default function ProductDetail() {
           <div className="w-16 h-16 rounded-2xl bg-[#58545F] text-[#DC8E90] flex items-center justify-center mb-4 text-2xl font-black">
             🐾
           </div>
-          <h2 className="font-display font-extrabold text-2xl text-[#2B2730] mb-2 tracking-tight">
-            DROP NOT FOUND
+          <h2 className="font-heading font-extrabold text-2xl text-[#2B2730] mb-2 tracking-tight">
+            PIECE NOT FOUND
           </h2>
           <p className="text-sm text-[#58545F] max-w-sm mb-6">
-            This streetwear drop might have sold out or moved to our upcoming vault archive.
+            This piece might have moved to our archive. Explore our current collections.
           </p>
           <button
-            onClick={() => navigate("/collections")}
+            onClick={() => navigate("/originals")}
             className="px-6 py-3 rounded-full bg-[#58545F] hover:bg-[#DC8E90] text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
-            Explore Streetwear Drops
+            Explore Originals
           </button>
         </div>
         <Footer />
@@ -287,7 +281,7 @@ export default function ProductDetail() {
         <div className="flex items-center gap-2 text-xs font-medium text-[#7E7785]">
           <Link to="/" className="hover:text-[#DC8E90] transition-colors">Home</Link>
           <span>/</span>
-          <Link to="/collections" className="hover:text-[#DC8E90] transition-colors">Drops</Link>
+          <Link to="/originals" className="hover:text-[#DC8E90] transition-colors">Originals</Link>
           <span>/</span>
           <span className="text-[#2B2730] font-bold uppercase tracking-wider truncate max-w-xs">
             {product.name}
@@ -336,19 +330,14 @@ export default function ProductDetail() {
                 className="w-full h-full object-contain transition-opacity duration-300"
               />
 
-              {/* Streetwear Badges */}
+              {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black tracking-wider uppercase bg-[#58545F] text-white shadow-sm">
-                  240 GSM HEAVYWEIGHT
+                  {product.category || "Furever Animals"}
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black tracking-wider uppercase bg-[#DC8E90] text-white shadow-sm">
-                  🐾 10% TO ANIMAL NGOs
+                  🐾 10% TO ANIMAL WELFARE
                 </span>
-                {product.drop && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/95 text-[#2B2730] border border-[#EDE4DD]">
-                    {product.drop}
-                  </span>
-                )}
               </div>
 
               {/* Color indicator tag */}
@@ -358,17 +347,17 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* RIGHT: STREETWEAR DETAILS & CUSTOMIZER (6 COLS) */}
+          {/* RIGHT: DETAILS & CUSTOMIZER (6 COLS) */}
           <div className="lg:col-span-6 flex flex-col justify-between">
             <div>
-              {/* Category, Drop & Rating */}
+              {/* Category, Series & Rating */}
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-black uppercase tracking-wider text-[#A97882] bg-[#DC8E90]/15 px-3 py-0.5 rounded-full border border-[#DC8E90]/30">
-                    {product.category || "Unisex"}
+                    {product.category || "Furever Animals"}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#7E7785]">
-                    {product.subCategory || "Oversized Streetwear"}
+                    {product.subCategory || "Originals Series"}
                   </span>
                 </div>
 
@@ -382,34 +371,34 @@ export default function ProductDetail() {
               </div>
 
               {/* Title */}
-              <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-[#2B2730] tracking-tight uppercase leading-tight mb-3">
+              <h1 className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-[#2B2730] tracking-tight uppercase leading-tight mb-3">
                 {product.name}
               </h1>
 
               {/* Pricing & Net Profit Grant Callout */}
               <div className="flex items-baseline gap-3 mb-4">
-                <span className="font-display font-black text-3xl sm:text-4xl text-[#2B2730]">
+                <span className="font-heading font-black text-3xl sm:text-4xl text-[#2B2730]">
                   {currency}{product.price}
                 </span>
                 <span className="text-base text-[#7E7785] line-through font-semibold">
-                  {currency}{product.originalPrice || 899}
+                  {currency}{product.originalPrice || 799}
                 </span>
                 <span className="text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                  Save {Math.round((((product.originalPrice || 899) - product.price) / (product.originalPrice || 899)) * 100)}% OFF
+                  Save {Math.round((((product.originalPrice || 799) - product.price) / (product.originalPrice || 799)) * 100)}% OFF
                 </span>
               </div>
 
-              {/* NGO Impact Ribbon - Warm Sophistication */}
+              {/* Welfare Impact Ribbon */}
               <div className="p-3.5 rounded-2xl bg-[#DC8E90]/15 border border-[#DC8E90]/30 text-[#2B2730] mb-6 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#DC8E90] text-white flex items-center justify-center shrink-0 text-base font-bold shadow-xs">
                   🐾
                 </div>
                 <div className="text-xs leading-relaxed">
                   <strong className="text-[#A97882] font-black uppercase tracking-wider block">
-                    10% SOCIAL MISSION COMMITMENT
+                    10% ANIMAL WELFARE COMMITMENT
                   </strong>
                   <span>
-                    Your purchase funds <strong>₹{ngoContribution}</strong> directly to local partner animal rescue shelters for stray food bowls, rabies vaccinations, and emergency medical care.
+                    Your purchase funds <strong>₹{ngoContribution}</strong> directly to local animal welfare programs for stray food bowls, rabies vaccinations, and emergency medical care.
                   </span>
                 </div>
               </div>
@@ -417,7 +406,7 @@ export default function ProductDetail() {
               {/* Product Description */}
               <p className="text-xs sm:text-sm text-[#58545F] leading-relaxed mb-6 font-medium">
                 {product.description ||
-                  "Heavyweight 240 GSM 100% Combed Cotton crafted for a relaxed, slouchy drop-shoulder streetwear fit. Features durable direct-to-garment line art graphics engineered to never peel or crack."}
+                  "Heavyweight 240 GSM 100% Combed Cotton crafted for a relaxed, comfortable drape. Features durable direct-to-garment line art graphics engineered to stay with you."}
               </p>
 
               {/* ================= DUAL COLOR SELECTOR ================= */}
@@ -526,7 +515,7 @@ export default function ProductDetail() {
                           {customStyle === "stencil" && <Check size={14} className="text-[#DC8E90]" />}
                         </div>
                         <p className="text-[11px] text-[#58545F]">
-                          Bold high-contrast streetwear stencil with deep shadow fills.
+                          Bold high-contrast art stencil with deep shadow fills.
                         </p>
                       </button>
                     </div>
@@ -568,7 +557,7 @@ export default function ProductDetail() {
                           <div className="text-left flex-1 min-w-0">
                             <p className="text-xs font-bold text-[#2B2730] truncate">{petPhotoName}</p>
                             <p className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                              <CheckCircle2 size={12} /> Ready for hand-drawing
+                              <CheckCircle2 size={12} /> Ready for hand-rendering
                             </p>
                           </div>
                           <span className="text-[10px] font-bold text-[#58545F] underline">Change</span>
@@ -577,7 +566,10 @@ export default function ProductDetail() {
                         <div className="flex flex-col items-center justify-center py-2">
                           <UploadCloud size={24} className="text-[#DC8E90] mb-1.5" />
                           <p className="text-xs font-bold text-[#2B2730]">
-                            Click or drag to upload your pet photo
+                            Click or drag to upload your companion's photo
+                          </p>
+                          <p className="text-xs font-bold text-[#DC8E90] mt-1">
+                            Photos given in high quality will be printed.
                           </p>
                           <p className="text-[10px] text-[#7E7785] mt-0.5">
                             PNG, JPG or HEIC up to 25MB
@@ -591,7 +583,7 @@ export default function ProductDetail() {
                   <div className="p-3 rounded-xl bg-[#FFC5A6]/20 border border-[#FFC5A6]/40 text-[#2B2730] text-xs flex items-start gap-2.5">
                     <span className="text-base">📲</span>
                     <div className="text-[11px] leading-relaxed">
-                      <strong>FREE WhatsApp Digital Proof in 24 Hours:</strong> Before anything goes to our high-density garment printers, our design team will send you the vector artwork proof on WhatsApp for your 100% approval.
+                      <strong>Digital WhatsApp Proof in 24 Hours:</strong> Before printing, our artists will send you the vector artwork proof on WhatsApp for your approval.
                     </div>
                   </div>
                 </div>
@@ -601,10 +593,10 @@ export default function ProductDetail() {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2.5">
                   <label className="text-xs font-black uppercase tracking-wider text-[#2B2730]">
-                    Select Streetwear Size: <strong className="text-[#DC8E90]">{selectedSize || "None"}</strong>
+                    Select Size: <strong className="text-[#DC8E90]">{selectedSize || "None"}</strong>
                   </label>
                   <span className="text-[11px] font-bold text-[#58545F] underline cursor-pointer">
-                    📏 Boxy Drop-Shoulder Guide
+                    📏 Size Guide
                   </span>
                 </div>
 
@@ -625,7 +617,7 @@ export default function ProductDetail() {
                   ))}
                 </div>
                 <p className="text-[11px] text-[#7E7785] mt-2 font-medium">
-                  💡 <em>True-to-size streetwear cut. If you prefer an ultra-baggy 90s skater drape, size up by 1.</em>
+                  💡 <em>Relaxed, comfortable drape. Fits true to size.</em>
                 </p>
               </div>
 
@@ -661,7 +653,7 @@ export default function ProductDetail() {
                     className="flex-1 py-4 px-6 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     <ShoppingBag size={18} />
-                    <span>{isAdding ? "Adding Drop..." : "Add to Street Bag 🐾"}</span>
+                    <span>{isAdding ? "Adding..." : "Add to Bag 🐾"}</span>
                   </button>
                 </div>
 
@@ -671,7 +663,7 @@ export default function ProductDetail() {
                   onClick={handleBuyNow}
                   className="w-full py-4 px-6 rounded-full bg-[#DC8E90] hover:bg-[#A97882] text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>Instant Buy Drop (₹{product.price * quantity})</span>
+                  <span>Instant Buy (₹{product.price * quantity})</span>
                   <ArrowRight size={16} />
                 </button>
 
@@ -692,7 +684,7 @@ export default function ProductDetail() {
               <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-white border border-[#EDE4DD] mb-8">
                 <div className="flex items-center gap-2.5 text-xs font-bold text-[#2B2730]">
                   <Truck size={16} className="text-[#DC8E90] shrink-0" />
-                  <span>Free Shipping on All Orders</span>
+                  <span>Tracked Delivery Across India</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs font-bold text-[#2B2730]">
                   <RotateCcw size={16} className="text-[#DC8E90] shrink-0" />
@@ -700,11 +692,11 @@ export default function ProductDetail() {
                 </div>
                 <div className="flex items-center gap-2.5 text-xs font-bold text-[#2B2730]">
                   <ShieldCheck size={16} className="text-[#DC8E90] shrink-0" />
-                  <span>240 GSM Combed French Terry</span>
+                  <span>Heavyweight Combed Cotton</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs font-bold text-[#2B2730]">
                   <Heart size={16} className="text-[#DC8E90] shrink-0 fill-[#DC8E90]" />
-                  <span>10% Net Profit to Shelters</span>
+                  <span>10% Net Profit to Animal Welfare</span>
                 </div>
               </div>
 
@@ -713,21 +705,21 @@ export default function ProductDetail() {
                 {[
                   {
                     id: "craftsmanship",
-                    title: "👕 240 GSM Streetwear Craftsmanship",
+                    title: "👕 Fabric & Craftsmanship Specification",
                     content:
-                      "Engineered with 100% combed cotton, French Terry loop knitting, and reinforced ribbed crew collars that do not sag after repeated washes. Pre-shrunk to retain its boxy streetwear silhouette.",
+                      "Crafted with 100% combed cotton, French Terry loop knitting, and reinforced ribbed crew collars. Pre-shrunk to retain its relaxed, structured drape.",
                   },
                   {
                     id: "ngo-impact",
                     title: "🐾 How Your 10% Donation Works",
                     content:
-                      `With every order of this tee, ₹${ngoContribution} is disbursed to our verified animal rescue shelter partners (PAWS India, Friendicoes, and Stray Relief). We publish quarterly transparent audit records on our website.`,
+                      `With every order of this tee, ₹${ngoContribution} is contributed to verified local animal welfare programs and rescue shelters for stray medical care and feeding.`,
                   },
                   {
                     id: "shipping",
                     title: "📦 Dispatch & Delivery Timeline",
                     content:
-                      "Regular Drop 001 tees dispatch within 24-48 hours. Custom Pet Tees require 24 hours for artist proof generation and 48 hours for high-density curing. Doorstep delivery takes 3-5 business days across all Indian pin codes.",
+                      "Original pieces dispatch within 24-48 hours. Custom Pet Tees include a WhatsApp digital art proof before printing. Doorstep delivery takes 3-5 business days across all Indian pin codes.",
                   },
                 ].map((item) => (
                   <div
@@ -762,24 +754,24 @@ export default function ProductDetail() {
         </div>
 
         {/* ================= REVIEWS SECTION ================= */}
-        <section className="mt-20 pt-12 border-t border-[#EDE4DD]">
+        <section className="mt-20 pt-16 border-t border-[#EDE4DD]">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#A97882] bg-[#DC8E90]/15 px-3 py-1 rounded-full border border-[#DC8E90]/30">
-                Community Feedback
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#DC8E90]">
+                Customer Stories
               </span>
               <h2 className="font-display font-black text-2xl sm:text-3xl text-[#2B2730] uppercase tracking-tight mt-2">
-                Streetwear Verified Reviews 🐾
+                Community Feedback & Reviews 🐾
               </h2>
               <p className="text-xs text-[#58545F] mt-1 font-medium">
-                Real fits and feedback from pet lovers and streetwear creators across India.
+                Real feedback from animal lovers and pet parents across India.
               </p>
             </div>
 
             {/* Submit Review Form */}
             <div className="p-6 rounded-3xl bg-white border border-[#EDE4DD] shadow-2xs mb-10">
               <h3 className="font-display font-black text-xs uppercase tracking-wider text-[#2B2730] mb-3">
-                Rate & Review This Streetwear Drop
+                Rate & Review This Piece
               </h3>
               <form onSubmit={handleReviewSubmit} className="space-y-4">
                 <div className="flex items-center gap-2">
@@ -808,7 +800,7 @@ export default function ProductDetail() {
                 <textarea
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
-                  placeholder="Share details on the 240 GSM cotton weight, boxy drape, print clarity, or sizing..."
+                  placeholder="Share details on the cotton quality, drape, print clarity, or fit..."
                   rows={3}
                   className="w-full p-3.5 rounded-2xl bg-[#FAF6F2] border border-[#EDE4DD] text-xs text-[#2B2730] placeholder-[#7E7785] focus:outline-none focus:border-[#58545F] font-medium"
                 />
@@ -836,7 +828,7 @@ export default function ProductDetail() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="font-black text-xs text-[#2B2730] uppercase tracking-wider">
-                          {rev.name || "Streetwear Creator"}
+                          {rev.name || "Community Member"}
                         </span>
                         <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                           Verified Buyer
@@ -854,21 +846,21 @@ export default function ProductDetail() {
               </div>
             ) : (
               <div className="text-center py-8 text-xs text-[#7E7785] font-medium">
-                No written reviews yet. Be the first to rock and review this 240 GSM drop!
+                No written reviews yet. Be the first to wear and review this piece!
               </div>
             )}
           </div>
         </section>
 
-        {/* ================= RELATED STREETWEAR DROPS ================= */}
+        {/* ================= RELATED PIECES ================= */}
         {relatedProducts.length > 0 && (
           <section className="mt-20 pt-12 border-t border-[#EDE4DD]">
             <div className="text-center mb-10">
               <span className="text-[11px] font-black uppercase tracking-wider text-[#DC8E90]">
-                More from Drop 001
+                Furever Collection
               </span>
               <h3 className="font-display font-black text-2xl text-[#2B2730] uppercase tracking-tight mt-1">
-                Complete Your Street Fit 🐾
+                More From FurEver 🐾
               </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

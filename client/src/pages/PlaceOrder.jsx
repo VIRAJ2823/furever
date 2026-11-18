@@ -110,7 +110,7 @@ export default function PlaceOrder() {
     if (order) {
       sessionStorage.setItem("latestOrder", JSON.stringify(order));
     }
-    setSuccessMessage(message || "Street order placed! Thanks for supporting our animal welfare mission 🐾");
+    setSuccessMessage(message || "Order placed! Thanks for supporting our animal welfare mission 🐾");
     setCartItems({});
     setTimeout(() => {
       navigate("/orders", { replace: true });
@@ -134,8 +134,8 @@ export default function PlaceOrder() {
       key: razorpayKeyId,
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency || "INR",
-      name: "FUREVER STREETWEAR",
-      description: "240 GSM Cotton Drop Checkout",
+      name: "FUREVER",
+      description: "FurEver Lifestyle Checkout",
       order_id: razorpayOrder.id,
       prefill: {
         name: `${formData.firstName} ${formData.lastName}`.trim(),
@@ -163,19 +163,18 @@ export default function PlaceOrder() {
 
           if (verificationResult.data?.success) {
             handleOrderSuccess(
-              verificationResult.data?.order,
-              verificationResult.data?.message || "Payment verified! Your street order is getting printed."
+              verificationResult.data.order,
+              verificationResult.data?.message || "Payment verified! Your order is being processed."
             );
-            return;
+          } else {
+            setErrorMessage(
+              verificationResult.data?.message || "Payment verification failed."
+            );
           }
-
-          setErrorMessage(
-            verificationResult.data?.message || "Payment verification failed."
-          );
         } catch (error) {
-          console.log("Razorpay verification error:", error);
+          console.error("Verification error:", error);
           setErrorMessage(
-            error?.response?.data?.message || "Payment completed, but verification failed."
+            error.response?.data?.message || "Payment verification error."
           );
         } finally {
           setPlacingOrder(false);
@@ -202,7 +201,7 @@ export default function PlaceOrder() {
     e.preventDefault();
 
     if (!orderItems.length) {
-      setErrorMessage("Your street bag is empty.");
+      setErrorMessage("Your bag is empty.");
       return;
     }
 
@@ -287,9 +286,9 @@ export default function PlaceOrder() {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#58545F] text-white text-[11px] font-black uppercase tracking-wider mb-2 shadow-xs">
               <Lock size={13} className="text-[#FDAC98]" />
-              <span>Secure Street Checkout</span>
+              <span>Secure Checkout</span>
             </div>
-            <h1 className="font-display font-black text-3xl sm:text-4xl uppercase tracking-tight text-[#2B2730]">
+            <h1 className="font-heading font-black text-3xl sm:text-4xl uppercase tracking-tight text-[#2B2730]">
               Delivery & Payment
             </h1>
           </div>
@@ -305,17 +304,17 @@ export default function PlaceOrder() {
 
         {orderItems.length === 0 ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-[#EDE4DD] p-8 max-w-xl mx-auto shadow-xs">
-            <h2 className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730] mb-2">
-              Your Street Bag is Empty
+            <h2 className="font-heading font-black text-2xl uppercase tracking-tight text-[#2B2730] mb-2">
+              Your Bag is Empty
             </h2>
             <p className="text-xs sm:text-sm text-[#58545F] mb-6 font-medium">
-              You must have at least one streetwear item in your bag to proceed with checkout.
+              You must have at least one item in your bag to proceed with checkout.
             </p>
             <button
-              onClick={() => navigate("/collections")}
+              onClick={() => navigate("/originals")}
               className="px-8 py-3.5 rounded-full bg-[#58545F] hover:bg-[#2B2730] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
             >
-              Shop Street Drops 🐾
+              Explore Originals 🐾
             </button>
           </div>
         ) : (
@@ -552,8 +551,8 @@ export default function PlaceOrder() {
               {/* RIGHT COLUMN: ORDER SUMMARY & SUBMIT (5 COLS) */}
               <div className="lg:col-span-5">
                 <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#EDE4DD] shadow-xs sticky top-28 space-y-6">
-                  <h3 className="font-display font-black text-base uppercase tracking-wider text-[#2B2730]">
-                    Street Bag Summary ({orderItems.length})
+                  <h3 className="font-heading font-black text-base uppercase tracking-wider text-[#2B2730]">
+                    Bag Summary ({orderItems.length})
                   </h3>
 
                   {/* 10% Social Impact Ribbon */}
@@ -576,10 +575,10 @@ export default function PlaceOrder() {
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-black uppercase tracking-tight text-[#2B2730] truncate">{item.name}</p>
                           <p className="text-[10px] text-[#7E7785] font-semibold">
-                            Size: {item.size} • Qty: {item.quantity} • 240 GSM
+                            Size: {item.size} • Qty: {item.quantity}
                           </p>
                         </div>
-                        <span className="font-display font-black text-xs text-[#2B2730]">
+                        <span className="font-heading font-black text-xs text-[#2B2730]">
                           {currency}{item.price * item.quantity}
                         </span>
                       </div>
@@ -593,24 +592,18 @@ export default function PlaceOrder() {
                       <span className="font-black text-[#2B2730]">{currency}{cartAmount}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Express Shipping</span>
-                      <span>
-                        {isFreeDelivery ? (
-                          <span className="text-emerald-700 font-black">FREE</span>
-                        ) : (
-                          `${currency}${finalDeliveryFee}`
-                        )}
-                      </span>
+                      <span>Standard Shipping</span>
+                      <span>{currency}{finalDeliveryFee}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>10% Shelter NGO Grant</span>
+                      <span>10% Shelter Welfare Grant</span>
                       <span className="text-[#DC8E90] font-black">Included ❤️</span>
                     </div>
                   </div>
 
                   <div className="flex justify-between items-baseline">
-                    <span className="font-display font-black text-sm uppercase tracking-wider text-[#2B2730]">Total Amount</span>
-                    <span className="font-display font-black text-2xl text-[#2B2730]">
+                    <span className="font-heading font-black text-sm uppercase tracking-wider text-[#2B2730]">Total Amount</span>
+                    <span className="font-heading font-black text-2xl text-[#2B2730]">
                       {currency}{totalAmount}
                     </span>
                   </div>
@@ -623,7 +616,7 @@ export default function PlaceOrder() {
                     {placingOrder ? (
                       <>
                         <LoaderCircle size={18} className="animate-spin text-[#FDAC98]" />
-                        <span>Confirming Street Order...</span>
+                        <span>Confirming Order...</span>
                       </>
                     ) : (
                       <>

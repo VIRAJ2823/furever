@@ -6,6 +6,7 @@ import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import googleLogo from "../assets/google.png";
 import paws from "../assets/paws.png";
+import FureverLogo from "../components/FureverLogo";
 import { authDataContext } from "../context/Authcontext.jsx";
 import { userDataContext } from "../context/UserContext.jsx";
 import { auth, provider } from "../utils/Firebase.js";
@@ -113,19 +114,14 @@ export default function Login() {
       >
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#58545F] flex items-center justify-center p-2 shadow-xs">
-              <img src={paws} alt="Furever" className="w-full h-full object-contain" />
-            </div>
-            <span className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
-              FUR<span className="text-[#DC8E90]">EVER</span>
-            </span>
+          <Link to="/" className="inline-flex items-center justify-center mb-4">
+            <FureverLogo size="md" />
           </Link>
           <h1 className="font-display font-black text-2xl uppercase tracking-tight text-[#2B2730]">
             Welcome to Furever 🐾
           </h1>
           <p className="text-xs text-[#58545F] mt-1 font-medium">
-            Sign in to track orders, save custom pet proofs, and support animal rescues.
+            Sign in to track orders, save custom pet proofs, and support animal welfare.
           </p>
         </div>
 

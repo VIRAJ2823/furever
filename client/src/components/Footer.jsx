@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Mail,
-  ArrowRight,
   Heart,
   ShieldCheck,
   CheckCircle2,
   Sparkles,
 } from "lucide-react";
-import { FaInstagram, FaTwitter, FaFacebookF } from "react-icons/fa";
-import paws from "../assets/paws.png";
+import { FaInstagram } from "react-icons/fa";
+import FureverLogo from "./FureverLogo";
 
 export default function Footer() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -25,28 +23,28 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-[#2B2730] text-[#FAF6F2] border-t border-[#3D3845] overflow-hidden">
+    <footer className="w-full bg-[#0E1D61] text-[#E8E0D2] border-t border-[#B89A5A]/30 overflow-hidden">
       
       {/* ================= TOP NEWSLETTER & VIP ACCESS ================= */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center pb-16 border-b border-[#3D3845]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center pb-16 border-b border-[#B89A5A]/20">
           
           {/* Brand Promise */}
           <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-black uppercase tracking-wider text-[#FFC5A6] mb-4">
-              <Sparkles size={13} className="text-[#FDAC98]" />
-              <span>VIP STREETWEAR DROP ACCESS</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-[#B89A5A]/30 text-[11px] font-black uppercase tracking-wider text-[#B89A5A] mb-4">
+              <Sparkles size={13} className="text-[#B89A5A]" />
+              <span>THE FUREVER COMMUNITY</span>
             </div>
 
-            <h3 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-4">
-              Get 15% off Drop 001 +{" "}
-              <span className="text-[#DC8E90]">
-                Drop 002 early alert.
+            <h3 className="font-heading font-black text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-4">
+              Join the family.{" "}
+              <span className="text-[#B89A5A]">
+                Next Drop early access.
               </span>
             </h3>
 
-            <p className="text-[#D3CAD7] text-xs sm:text-sm max-w-xl leading-relaxed font-medium">
-              Join 15,000+ streetwear creators and animal lovers. Enjoy early drop allocations, behind-the-scenes print shop previews, and quarterly NGO rescue impact reports.
+            <p className="text-[#E8E0D2]/80 text-xs sm:text-sm max-w-xl leading-relaxed font-medium">
+              Join thousands of animal lovers and pet parents across India. Receive advance access to new drop allocations, behind-the-scenes artist sketches, and quarterly animal welfare contribution reports.
             </p>
           </div>
 
@@ -55,31 +53,31 @@ export default function Footer() {
             {!subscribed ? (
               <form onSubmit={handleSubscribe} className="space-y-3">
                 <div className="relative flex items-center">
-                  <Mail size={18} className="absolute left-4 text-[#A97882]" />
+                  <Mail size={18} className="absolute left-4 text-[#B89A5A]" />
                   <input
                     type="email"
                     required
-                    placeholder="Enter email for 15% off drop code..."
+                    placeholder="Enter email address..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-32 py-4 rounded-full bg-[#393441] border border-[#4E4857] text-white placeholder-[#A97882] text-xs sm:text-sm font-medium outline-none focus:border-[#DC8E90] transition-all"
+                    className="w-full pl-11 pr-32 py-4 rounded-full bg-white/10 border border-[#B89A5A]/40 text-white placeholder-[#E8E0D2]/50 text-xs sm:text-sm font-medium outline-none focus:border-[#B89A5A] transition-all"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 px-6 py-2.5 rounded-full bg-[#DC8E90] hover:bg-[#A97882] active:scale-[0.98] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-xs"
+                    className="absolute right-1.5 px-6 py-2.5 rounded-full bg-[#B89A5A] hover:bg-[#9E8246] active:scale-[0.98] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-xs"
                   >
-                    Get 15% 🐾
+                    Subscribe 🐾
                   </button>
                 </div>
-                <p className="text-[11px] text-[#A97882] pl-4">
-                  Zero spam. Strictly heavy streetwear drops and rescue impact updates.
+                <p className="text-[11px] text-[#E8E0D2]/60 pl-4">
+                  Zero spam. Strictly new drop previews and rescue mission updates.
                 </p>
               </form>
             ) : (
-              <div className="p-4 rounded-2xl bg-[#DC8E90]/20 border border-[#DC8E90]/40 text-white flex items-center gap-3">
-                <CheckCircle2 size={20} className="shrink-0 text-[#DC8E90]" />
+              <div className="p-4 rounded-2xl bg-[#B89A5A]/20 border border-[#B89A5A]/40 text-white flex items-center gap-3">
+                <CheckCircle2 size={20} className="shrink-0 text-[#B89A5A]" />
                 <span className="text-xs font-bold">
-                  You're on the VIP drop list! Check your inbox for your 15% discount code.
+                  Welcome to the FurEver family! Check your inbox for upcoming drop details.
                 </span>
               </div>
             )}
@@ -92,79 +90,56 @@ export default function Footer() {
           
           {/* Column 1: Brand Info */}
           <div className="col-span-2 md:col-span-1 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center p-1.5 shadow-xs">
-                <img src={paws} alt="FurEver" className="w-full h-full object-contain" />
-              </div>
-              <span className="font-display font-black text-xl text-white tracking-tight uppercase">
-                FUR<span className="text-[#DC8E90]">EVER</span>
-              </span>
+            <Link to="/" className="inline-block" aria-label="Furever Home">
+              <FureverLogo variant="light" size="md" />
             </Link>
 
-            <p className="text-xs text-[#D3CAD7] leading-relaxed font-medium">
-              240 GSM Heavyweight Indian Streetwear & Custom Memory Line Art Tees. 10% of our net profit directly funds vetted animal rescue NGO partners.
+            <p className="text-xs text-[#E8E0D2]/80 leading-relaxed font-medium">
+              An emerging lifestyle brand built around the bond people share with animals. 10% of our net profit directly supports animal welfare and rescue programs.
             </p>
 
             <div className="flex items-center gap-2.5 pt-2">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/furever.in?stkn=MTVrYmNmOGh4OWM3aQ=="
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-[#393441] border border-[#4E4857] flex items-center justify-center text-[#D3CAD7] hover:text-[#DC8E90] hover:border-[#DC8E90] transition-colors"
+                className="w-10 h-10 rounded-full bg-white/10 border border-[#B89A5A]/30 flex items-center justify-center text-[#E8E0D2] hover:text-[#B89A5A] hover:border-[#B89A5A] transition-all"
                 aria-label="Instagram"
               >
-                <FaInstagram size={15} />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-[#393441] border border-[#4E4857] flex items-center justify-center text-[#D3CAD7] hover:text-[#DC8E90] hover:border-[#DC8E90] transition-colors"
-                aria-label="Twitter"
-              >
-                <FaTwitter size={15} />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-[#393441] border border-[#4E4857] flex items-center justify-center text-[#D3CAD7] hover:text-[#DC8E90] hover:border-[#DC8E90] transition-colors"
-                aria-label="Facebook"
-              >
-                <FaFacebookF size={15} />
+                <FaInstagram size={17} />
               </a>
             </div>
           </div>
 
-          {/* Column 2: Drops & Apparel */}
+          {/* Column 2: The Collections */}
           <div>
-            <h4 className="font-display font-black text-xs uppercase tracking-wider text-white mb-4">
-              Street Drops
+            <h4 className="font-heading font-black text-xs uppercase tracking-wider text-white mb-4">
+              Collections
             </h4>
-            <ul className="space-y-2.5 text-xs text-[#D3CAD7] font-medium">
+            <ul className="space-y-2.5 text-xs text-[#E8E0D2]/80 font-medium">
               <li>
-                <Link to="/collections" className="hover:text-[#DC8E90] transition-colors">
-                  🔥 Drop 001: Dino Series
+                <Link to="/originals" className="hover:text-[#B89A5A] transition-colors">
+                  ✨ Furever Originals
                 </Link>
               </li>
               <li>
-                <Link to="/product/fur-custom-01" className="hover:text-[#DC8E90] transition-colors">
-                  🎨 Custom Pet Line Art Tee
+                <Link to="/customs" className="hover:text-[#B89A5A] transition-colors">
+                  🎨 Furever Customs
                 </Link>
               </li>
               <li>
-                <Link to="/product/fur-custom-02" className="hover:text-[#DC8E90] transition-colors">
+                <Link to="/product/fur-custom-01" className="hover:text-[#B89A5A] transition-colors">
+                  🐾 Custom Pet Line Art Tee
+                </Link>
+              </li>
+              <li>
+                <Link to="/product/fur-custom-02" className="hover:text-[#B89A5A] transition-colors">
                   ⚡ Custom Pet Stencil Art Tee
                 </Link>
               </li>
               <li>
-                <Link to="/collections?category=Unisex" className="hover:text-[#DC8E90] transition-colors">
-                  👕 240 GSM Oversized Tees
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections" className="hover:text-[#DC8E90] transition-colors">
-                  ✨ Drop 002 Teasers (Coming Soon)
+                <Link to="/originals" className="hover:text-[#B89A5A] transition-colors">
+                  ⏳ Drop 002 (Arriving Soon)
                 </Link>
               </li>
             </ul>
@@ -172,54 +147,54 @@ export default function Footer() {
 
           {/* Column 3: The Mission & Support */}
           <div>
-            <h4 className="font-display font-black text-xs uppercase tracking-wider text-white mb-4">
-              The Movement
+            <h4 className="font-heading font-black text-xs uppercase tracking-wider text-white mb-4">
+              The Brand
             </h4>
-            <ul className="space-y-2.5 text-xs text-[#D3CAD7] font-medium">
+            <ul className="space-y-2.5 text-xs text-[#E8E0D2]/80 font-medium">
               <li>
-                <Link to="/about" className="hover:text-[#DC8E90] transition-colors">
-                  🐾 10% NGO Impact Report
+                <Link to="/about" className="hover:text-[#B89A5A] transition-colors">
+                  📖 Our Story & Philosophy
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-[#DC8E90] transition-colors">
-                  👕 240 GSM French Terry Spec
+                <Link to="/about#contribution" className="hover:text-[#B89A5A] transition-colors">
+                  🐾 10% Animal Welfare Allocation
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-[#DC8E90] transition-colors">
-                  📲 WhatsApp Order Support
+                <Link to="/contact" className="hover:text-[#B89A5A] transition-colors">
+                  📲 Contact & Inquiries
                 </Link>
               </li>
               <li>
-                <Link to="/orders" className="hover:text-[#DC8E90] transition-colors">
-                  📦 Track My Street Order
+                <Link to="/orders" className="hover:text-[#B89A5A] transition-colors">
+                  📦 Track My Order
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Furever Guarantees */}
+          {/* Column 4: Guarantees */}
           <div>
-            <h4 className="font-display font-black text-xs uppercase tracking-wider text-white mb-4">
-              Our Guarantees
+            <h4 className="font-heading font-black text-xs uppercase tracking-wider text-white mb-4">
+              Our Commitments
             </h4>
-            <div className="space-y-3 text-xs text-[#D3CAD7] font-medium">
+            <div className="space-y-3 text-xs text-[#E8E0D2]/80 font-medium">
               <div className="flex items-start gap-2">
-                <ShieldCheck size={16} className="text-[#DC8E90] shrink-0 mt-0.5" />
-                <span>240 GSM Combed French Terry Cotton</span>
+                <ShieldCheck size={16} className="text-[#B89A5A] shrink-0 mt-0.5" />
+                <span>Heavyweight Combed French Terry Cotton</span>
               </div>
               <div className="flex items-start gap-2">
-                <Heart size={16} className="text-[#DC8E90] shrink-0 mt-0.5 fill-[#DC8E90]" />
-                <span>10% Net Profit directly to Animal NGOs</span>
+                <Heart size={16} className="text-[#B89A5A] shrink-0 mt-0.5 fill-[#B89A5A]" />
+                <span>10% Net Profit directly to Animal Welfare</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-sm">🔄</span>
-                <span>7-Day Easy Streetwear Size Swaps</span>
+                <span>7-Day Hassle-Free Size Exchanges</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-sm">🎨</span>
-                <span>24h WhatsApp Proof before printing</span>
+                <span>24h WhatsApp Digital Art Proof</span>
               </div>
             </div>
           </div>
@@ -227,12 +202,12 @@ export default function Footer() {
         </div>
 
         {/* ================= BOTTOM BAR ================= */}
-        <div className="pt-8 border-t border-[#3D3845] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A97882]">
-          <p>© 2026 FUREVER APPAREL. Heavyweight 240 GSM Streetwear With A Social Mission.</p>
+        <div className="pt-8 border-t border-[#B89A5A]/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#E8E0D2]/60">
+          <p>© 2026 FUREVER. Wear The Bond. Live The Memory.</p>
           <div className="flex items-center gap-6">
-            <span className="hover:text-[#DC8E90] cursor-pointer">Privacy Policy</span>
-            <span className="hover:text-[#DC8E90] cursor-pointer">Terms of Service</span>
-            <span className="hover:text-[#DC8E90] cursor-pointer">Size Guide</span>
+            <span className="hover:text-[#B89A5A] cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-[#B89A5A] cursor-pointer">Terms of Service</span>
+            <span className="hover:text-[#B89A5A] cursor-pointer">Shipping & Returns</span>
           </div>
         </div>
 
